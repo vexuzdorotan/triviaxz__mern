@@ -1,12 +1,21 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Jumbotron, Button, Alert, ProgressBar } from 'react-bootstrap';
+import {
+  Jumbotron,
+  Button,
+  Alert,
+  ProgressBar,
+  Spinner,
+} from 'react-bootstrap';
 
-import opentdb from '../api/opentdb';
 import { GlobalContext } from '../context/GlobalState';
 import Completed from './Completed';
+import Option from './Option';
 
 const QuestionAnswer = () => {
   const {
+    option,
+    start,
+    startGame,
     qa,
     questionNumber,
     fetchQA,
@@ -20,29 +29,20 @@ const QuestionAnswer = () => {
   const [score, setScore] = useState(0);
 
   useEffect(() => {
-    (async () => {
-      const response = await opentdb.get('', {
-        params: {
-          amount: 2,
-          type: 'multiple',
-        },
-      });
+    fetchQA()();
+  }, [start]);
 
-      fetchQA(response.data.results);
-    })();
-
-    // if (completed) {
-    //   saveScore(score);
-    // }
-  }, []);
+  if (completed && !start) {
+    console.log(score);
+    saveScore(score);
+    startGame(false);
+  }
 
   const answerOnClick = (ans) => {
     const correct =
       qa[questionNumber].correct_answer + ' ^_^' === ans ? true : false;
 
     if (correct) {
-      // console.log(score);
-      // score++;
       setScore(() => score + 1);
     }
 
@@ -134,12 +134,28 @@ const QuestionAnswer = () => {
   };
 
   const quizCompleted = () => {
-    // setCompleted(true);
+    if (!completed) {
+      setCompleted(true);
+    }
 
     return <Completed />;
   };
 
-  return <>{questionNumber !== qa.length ? renderQA() : quizCompleted()}</>;
+  console.log(start);
+
+  const renderFinal = () => {
+    if (!start) {
+      return <Option />;
+    } else if (qa.length === 1) {
+      return <Spinner animation="border" variant="primary" />;
+    } else if (questionNumber !== qa.length) {
+      return renderQA();
+    } else if (questionNumber === qa.length) {
+      return quizCompleted();
+    }
+  };
+
+  return <>{renderFinal()}</>;
 };
 
 export default QuestionAnswer;
