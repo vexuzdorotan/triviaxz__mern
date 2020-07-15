@@ -9,6 +9,7 @@
     "axios": "^0.18.1",
     "bootstrap": "^4.5.0",
     "eslint-plugin-react-hooks": "^4.0.8",
+    "lodash": "^4.17.19",
     "react": "^16.13.1",
     "react-bootstrap": "^1.2.1",
     "react-dom": "^16.13.1",

@@ -1,6 +1,9 @@
+import _ from 'lodash';
+
 export const START_GAME = 'START_GAME';
 export const SET_OPTION = 'SET_OPTION';
 export const FETCH_QA = 'FETCH_QA';
+export const CLEAR_QA = 'CLEAR_QA';
 export const INC_QNUMBER = 'INC_QNUMBER';
 export const SAVE_SCORE = 'SAVE_SCORE';
 
@@ -23,6 +26,9 @@ export default (state, action) => {
         ...state,
         qa: action.payload,
       };
+
+    case CLEAR_QA:
+      return action.payload;
 
     case INC_QNUMBER:
       return {

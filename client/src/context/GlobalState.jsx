@@ -4,6 +4,7 @@ import {
   SET_OPTION,
   START_GAME,
   FETCH_QA,
+  CLEAR_QA,
   INC_QNUMBER,
   SAVE_SCORE,
 } from './GlobalReducer';
@@ -17,16 +18,7 @@ const initialState = {
     difficulty: '',
     numQ: 0,
   },
-  qa: [
-    {
-      category: '',
-      type: '',
-      difficulty: '',
-      question: '',
-      correct_answer: '',
-      incorrect_answers: [],
-    },
-  ],
+  qa: [],
   score: 0,
   start: false,
 };
@@ -60,11 +52,16 @@ export const GlobalProvider = ({ children }) => {
       },
     });
 
-    console.log(response.data.results);
-
     dispatch({
       type: FETCH_QA,
       payload: response.data.results,
+    });
+  };
+
+  const clearQA = () => {
+    dispatch({
+      type: CLEAR_QA,
+      payload: initialState,
     });
   };
 
@@ -93,6 +90,7 @@ export const GlobalProvider = ({ children }) => {
         startGame,
         setOption,
         fetchQA,
+        clearQA,
         incrementQNumber,
         saveScore,
       }}

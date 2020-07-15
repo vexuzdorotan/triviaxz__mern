@@ -13,68 +13,56 @@ import Option from './Option';
 
 const QuestionAnswer = () => {
   const {
-    option,
     start,
-    startGame,
     qa,
     questionNumber,
     fetchQA,
     incrementQNumber,
+    score,
     saveScore,
   } = useContext(GlobalContext);
 
   const [alert, setAlert] = useState(false);
+  const [choices, setChoices] = useState([]);
   const [correct, setCorrect] = useState(true);
   const [completed, setCompleted] = useState(false);
-  const [score, setScore] = useState(0);
 
   useEffect(() => {
-    fetchQA()();
+    if (start) {
+      fetchQA()();
+    }
   }, [start]);
 
-  if (completed && !start) {
-    console.log(score);
-    saveScore(score);
-    startGame(false);
-  }
+  useEffect(() => {
+    if (questionNumber !== qa.length) {
+      const randomChoices = [
+        ...qa[questionNumber].incorrect_answers,
+        `${qa[questionNumber].correct_answer} ^_^`,
+      ]
+        .map((a) => ({ sort: Math.random(), value: a }))
+        .sort((a, b) => a.sort - b.sort)
+        .map((a) => a.value);
+
+      setChoices(randomChoices);
+    }
+  }, [qa, questionNumber]);
+
+  const [ans1, ans2, ans3, ans4] = choices;
 
   const answerOnClick = (ans) => {
     const correct =
       qa[questionNumber].correct_answer + ' ^_^' === ans ? true : false;
 
     if (correct) {
-      setScore(() => score + 1);
+      saveScore(score + 1);
     }
 
     setCorrect(correct);
-
     setAlert(true);
-    // setAlert(false);
-
     incrementQNumber(questionNumber);
   };
 
-  let answers = [];
-
-  // if completed
-  if (questionNumber !== qa.length) {
-    answers = [
-      ...qa[questionNumber].incorrect_answers,
-      `${qa[questionNumber].correct_answer} ^_^`,
-    ];
-  }
-
-  // shuffle array
-  if (answers.length !== 1) {
-    answers = answers
-      .map((a) => ({ sort: Math.random(), value: a }))
-      .sort((a, b) => a.sort - b.sort)
-      .map((a) => a.value);
-  }
-
-  const [ans1, ans2, ans3, ans4] = answers;
-
-  const renderQA = () => {
+  const showQuiz = () => {
     return (
       <Jumbotron className="mt-5">
         <h4>Score: {score}</h4>
@@ -141,16 +129,16 @@ const QuestionAnswer = () => {
     return <Completed />;
   };
 
-  console.log(start);
-
   const renderFinal = () => {
-    if (!start) {
+    console.log(`${start} .. ${qa.length}`);
+    if (!start && qa.length === 0) {
+      console.log('start');
       return <Option />;
-    } else if (qa.length === 1) {
+    } else if (start && qa.length === 0) {
       return <Spinner animation="border" variant="primary" />;
-    } else if (questionNumber !== qa.length) {
-      return renderQA();
-    } else if (questionNumber === qa.length) {
+    } else if (start && questionNumber !== qa.length) {
+      return showQuiz();
+    } else if (start && questionNumber === qa.length) {
       return quizCompleted();
     }
   };
