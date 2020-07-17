@@ -30,6 +30,11 @@ const QuestionAnswer = () => {
   useEffect(() => {
     if (start) {
       fetchQA()();
+    } else if (!start) {
+      setAlert(false);
+      setChoices([]);
+      setCorrect(true);
+      setCompleted(false);
     }
   }, [start]);
 
