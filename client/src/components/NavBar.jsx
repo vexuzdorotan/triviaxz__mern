@@ -1,9 +1,18 @@
-import React from 'react';
-
+import React, { useContext } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { Navbar, Nav, NavDropdown } from 'react-bootstrap';
 
+import { GlobalContext } from '../context/GlobalState';
+
 const NavBar = () => {
+  const { start, clearQA } = useContext(GlobalContext);
+
+  const homeOnClick = () => {
+    if (start) {
+      clearQA();
+    }
+  };
+
   return (
     <>
       <Navbar bg="dark" variant="dark">
@@ -14,8 +23,8 @@ const NavBar = () => {
         {/* <Navbar.Text>Score: </Navbar.Text> */}
         <Nav variant="pills" defaultActiveKey="/">
           <Nav.Item>
-            <Nav.Link as={NavLink} to="/" exact>
-              Play
+            <Nav.Link as={NavLink} to="/" exact onClick={() => homeOnClick()}>
+              {start ? 'Quit' : 'Play'}
             </Nav.Link>
           </Nav.Item>
           <Nav.Item>

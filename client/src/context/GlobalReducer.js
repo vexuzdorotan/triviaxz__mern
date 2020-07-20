@@ -6,6 +6,7 @@ export const FETCH_QA = 'FETCH_QA';
 export const CLEAR_QA = 'CLEAR_QA';
 export const INC_QNUMBER = 'INC_QNUMBER';
 export const SAVE_SCORE = 'SAVE_SCORE';
+export const BOOL_SCORE = 'BOOL_SCORE';
 
 export default (state, action) => {
   switch (action.type) {
@@ -40,6 +41,12 @@ export default (state, action) => {
       return {
         ...state,
         score: action.payload,
+      };
+
+    case BOOL_SCORE:
+      return {
+        ...state,
+        boolScore: action.payload,
       };
 
     default:

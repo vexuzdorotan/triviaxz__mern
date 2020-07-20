@@ -11,7 +11,7 @@ import { GlobalContext } from '../context/GlobalState';
 import Completed from './Completed';
 import Option from './Option';
 
-const QuestionAnswer = () => {
+const Home = () => {
   const {
     start,
     qa,
@@ -20,6 +20,8 @@ const QuestionAnswer = () => {
     incrementQNumber,
     score,
     saveScore,
+    boolScore,
+    setBoolScore,
   } = useContext(GlobalContext);
 
   const [alert, setAlert] = useState(false);
@@ -39,7 +41,7 @@ const QuestionAnswer = () => {
   }, [start]);
 
   useEffect(() => {
-    if (questionNumber !== qa.length) {
+    if (questionNumber < qa.length) {
       const randomChoices = [
         ...qa[questionNumber].incorrect_answers,
         `${qa[questionNumber].correct_answer} ^_^`,
@@ -52,65 +54,77 @@ const QuestionAnswer = () => {
     }
   }, [qa, questionNumber]);
 
-  const [ans1, ans2, ans3, ans4] = choices;
-
   const answerOnClick = (ans) => {
-    const correct =
-      qa[questionNumber].correct_answer + ' ^_^' === ans ? true : false;
+    if (questionNumber < qa.length) {
+      const correct =
+        qa[questionNumber].correct_answer + ' ^_^' === ans ? true : false;
 
-    if (correct) {
-      saveScore(score + 1);
+      if (correct) {
+        saveScore(score + 1);
+        setBoolScore(true);
+      } else if (!correct) {
+        setBoolScore(false);
+      }
+
+      setCorrect(correct);
+      setAlert(true);
+      incrementQNumber(questionNumber);
     }
-
-    setCorrect(correct);
-    setAlert(true);
-    incrementQNumber(questionNumber);
   };
 
   const showQuiz = () => {
+    const progressBoolScore = () => {
+      return boolScore.map((bool, i) => {
+        return (
+          <ProgressBar
+            striped
+            variant={bool ? 'success' : 'danger'}
+            now={100 / qa.length}
+            key={i}
+          />
+        );
+      });
+    };
+
+    const answerButtons = () => {
+      return choices.map((choice, i) => {
+        return (
+          <Button
+            onClick={(e) => answerOnClick(e.target.textContent)}
+            variant="primary"
+            key={i}
+            block
+          >
+            {choice}
+          </Button>
+        );
+      });
+    };
+
+    const questionText = () => {
+      let qN = questionNumber;
+
+      if (questionNumber === qa.length) {
+        qN -= 1;
+      }
+
+      return (
+        <>
+          <h1>Question {`${qN + 1}`}</h1>
+          <span>{qa[qN].question}</span>
+        </>
+      );
+    };
+
     return (
       <Jumbotron className="mt-5">
         <h4>Score: {score}</h4>
-        <h1>Question {`${questionNumber + 1}`}</h1>
-        <span>{qa[questionNumber].question}</span>
+        <ProgressBar label={`${((questionNumber + 1) / qa.length) * 100}%`}>
+          {progressBoolScore()}
+        </ProgressBar>
+        {questionText()}
         <hr />
-        <p>
-          <Button
-            onClick={(e) => answerOnClick(e.target.textContent)}
-            variant="primary"
-            block
-          >
-            {ans1}
-          </Button>
-          <Button
-            onClick={(e) => answerOnClick(e.target.textContent)}
-            variant="primary"
-            block
-          >
-            {ans2}
-          </Button>
-          <Button
-            onClick={(e) => answerOnClick(e.target.textContent)}
-            variant="primary"
-            block
-          >
-            {ans3}
-          </Button>
-          <Button
-            onClick={(e) => answerOnClick(e.target.textContent)}
-            variant="primary"
-            block
-          >
-            {ans4}
-          </Button>
-        </p>
-        <ProgressBar
-          striped
-          variant="info"
-          animated
-          now={((questionNumber + 1) / qa.length) * 100}
-          label={`${((questionNumber + 1) / qa.length) * 100}%`}
-        />
+        <p>{answerButtons()}</p>
         {alert ? (
           <Alert variant={correct ? 'success' : 'danger'}>
             {correct
@@ -135,13 +149,11 @@ const QuestionAnswer = () => {
   };
 
   const renderFinal = () => {
-    console.log(`${start} .. ${qa.length}`);
     if (!start && qa.length === 0) {
-      console.log('start');
       return <Option />;
     } else if (start && qa.length === 0) {
       return <Spinner animation="border" variant="primary" />;
-    } else if (start && questionNumber !== qa.length) {
+    } else if (start && questionNumber <= qa.length) {
       return showQuiz();
     } else if (start && questionNumber === qa.length) {
       return quizCompleted();
@@ -151,4 +163,4 @@ const QuestionAnswer = () => {
   return <>{renderFinal()}</>;
 };
 
-export default QuestionAnswer;
+export default Home;

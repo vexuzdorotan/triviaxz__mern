@@ -5,7 +5,7 @@ import { Container } from 'react-bootstrap';
 
 import { GlobalProvider } from './context/GlobalState';
 import NavBar from './components/NavBar';
-import QuestionAnswer from './components/QuestionAnswer';
+import Home from './components/Home';
 import Scoreboard from './components/Scoreboard';
 
 const App = () => {
@@ -13,12 +13,12 @@ const App = () => {
     <GlobalProvider>
       <Router history={history}>
         <NavBar />
-        {/* <Container> */}
-        <Switch>
-          <Route path="/" exact component={QuestionAnswer}></Route>
-          <Route path="/scoreboard" exact component={Scoreboard}></Route>
-        </Switch>
-        {/* </Container> */}
+        <Container>
+          <Switch>
+            <Route path="/" exact component={Home}></Route>
+            <Route path="/scoreboard" exact component={Scoreboard}></Route>
+          </Switch>
+        </Container>
       </Router>
     </GlobalProvider>
   );

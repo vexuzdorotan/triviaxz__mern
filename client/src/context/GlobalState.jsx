@@ -7,6 +7,7 @@ import {
   CLEAR_QA,
   INC_QNUMBER,
   SAVE_SCORE,
+  BOOL_SCORE,
 } from './GlobalReducer';
 import GlobalReducer from './GlobalReducer';
 import opentdb from '../api/opentdb';
@@ -16,10 +17,11 @@ const initialState = {
   option: {
     category: 0,
     difficulty: '',
-    numQ: 0,
+    amount: 0,
   },
   qa: [],
   score: 0,
+  boolScore: [],
   start: false,
 };
 
@@ -43,13 +45,18 @@ export const GlobalProvider = ({ children }) => {
   };
 
   const fetchQA = () => async () => {
+    const { amount, category, difficulty } = state.option;
+    const type = 'multiple';
+    const params = Object.assign(
+      {},
+      amount && { amount },
+      category && { category },
+      difficulty && { difficulty },
+      type && { type }
+    );
+
     const response = await opentdb.get('', {
-      params: {
-        amount: state.option.numQ,
-        category: state.option.category,
-        difficulty: state.option.difficulty,
-        type: 'multiple',
-      },
+      params,
     });
 
     dispatch({
@@ -79,6 +86,13 @@ export const GlobalProvider = ({ children }) => {
     });
   };
 
+  const setBoolScore = (bool) => {
+    dispatch({
+      type: BOOL_SCORE,
+      payload: [...state.boolScore, bool],
+    });
+  };
+
   return (
     <GlobalContext.Provider
       value={{
@@ -87,12 +101,14 @@ export const GlobalProvider = ({ children }) => {
         questionNumber: state.questionNumber,
         qa: state.qa,
         score: state.score,
+        boolScore: state.boolScore,
         startGame,
         setOption,
         fetchQA,
         clearQA,
         incrementQNumber,
         saveScore,
+        setBoolScore,
       }}
     >
       {children}

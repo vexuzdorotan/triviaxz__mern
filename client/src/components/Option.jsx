@@ -8,7 +8,7 @@ const Option = () => {
 
   const [category, setCategory] = useState('');
   const [difficulty, setDifficulty] = useState('');
-  const [numQ, setNumQ] = useState('');
+  const [amount, setamount] = useState('');
 
   const category1Radios = [
     { name: 'Mathematics', value: '19' },
@@ -30,19 +30,19 @@ const Option = () => {
     { name: 'Medium', value: 'medium' },
     { name: 'Hard', value: 'hard' },
   ];
-  const numQRadios = [
+  const amountRadios = [
     { name: '5', value: '5' },
     { name: '10', value: '10' },
     { name: '20', value: '20' },
   ];
 
-  // const radios = [category1Radios, category2Radios, category3Radios, difficultyRadios, numQRadios]
+  // const radios = [category1Radios, category2Radios, category3Radios, difficultyRadios, amountRadios]
 
   const startOnClick = () => {
     setOption({
       category,
       difficulty,
-      numQ,
+      amount,
     });
     startGame(true);
   };
@@ -122,15 +122,15 @@ const Option = () => {
 
         <h4>Number of Questions:</h4>
         <ButtonGroup toggle>
-          {numQRadios.map((radio, idx) => (
+          {amountRadios.map((radio, idx) => (
             <ToggleButton
               key={idx}
               type="radio"
               variant="secondary"
-              name="numQ-radio"
+              name="amount-radio"
               value={radio.value}
-              checked={numQ === radio.value}
-              onChange={(e) => setNumQ(e.currentTarget.value)}
+              checked={amount === radio.value}
+              onChange={(e) => setamount(e.currentTarget.value)}
             >
               {radio.name}
             </ToggleButton>
