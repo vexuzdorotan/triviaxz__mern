@@ -1,6 +1,5 @@
 import React, { useState, useContext } from 'react';
-
-import { Button, ButtonGroup, ToggleButton } from 'react-bootstrap';
+import { Button, ButtonGroup, ToggleButton, Row, Col } from 'react-bootstrap';
 import { GlobalContext } from '../context/GlobalState';
 
 const Option = () => {
@@ -50,8 +49,9 @@ const Option = () => {
   const renderList = () => {
     return (
       <>
-        <h4>Select Category:</h4>
-        <ButtonGroup toggle>
+        <h6>Select Category:</h6>
+
+        <ButtonGroup toggle className="option-buttons">
           {category1Radios.map((radio, idx) => (
             <ToggleButton
               key={idx}
@@ -59,16 +59,17 @@ const Option = () => {
               variant="secondary"
               name="category-radio"
               value={radio.value}
+              size="sm"
               checked={category === radio.value}
               onChange={(e) => setCategory(e.currentTarget.value)}
-              style={{ display: 'block' }}
+              className="option-button"
             >
               {radio.name}
             </ToggleButton>
           ))}
         </ButtonGroup>
-        <br />
-        <ButtonGroup toggle>
+
+        <ButtonGroup toggle className="option-buttons">
           {category2Radios.map((radio, idx) => (
             <ToggleButton
               key={idx}
@@ -76,6 +77,7 @@ const Option = () => {
               variant="secondary"
               name="category-radio"
               value={radio.value}
+              size="sm"
               checked={category === radio.value}
               onChange={(e) => setCategory(e.currentTarget.value)}
               style={{ display: 'block' }}
@@ -84,8 +86,8 @@ const Option = () => {
             </ToggleButton>
           ))}
         </ButtonGroup>
-        <br />
-        <ButtonGroup toggle>
+
+        <ButtonGroup toggle className="option-buttons">
           {category3Radios.map((radio, idx) => (
             <ToggleButton
               key={idx}
@@ -93,6 +95,7 @@ const Option = () => {
               variant="secondary"
               name="category-radio"
               value={radio.value}
+              size="sm"
               checked={category === radio.value}
               onChange={(e) => setCategory(e.currentTarget.value)}
               style={{ display: 'block' }}
@@ -101,10 +104,9 @@ const Option = () => {
             </ToggleButton>
           ))}
         </ButtonGroup>
-        <br />
 
-        <h4>Select Difficulty:</h4>
-        <ButtonGroup toggle>
+        <h6>Select Difficulty:</h6>
+        <ButtonGroup toggle className="option-buttons">
           {difficultyRadios.map((radio, idx) => (
             <ToggleButton
               key={idx}
@@ -112,6 +114,7 @@ const Option = () => {
               variant="secondary"
               name="difficulty-radio"
               value={radio.value}
+              size="sm"
               checked={difficulty === radio.value}
               onChange={(e) => setDifficulty(e.currentTarget.value)}
             >
@@ -120,8 +123,8 @@ const Option = () => {
           ))}
         </ButtonGroup>
 
-        <h4>Number of Questions:</h4>
-        <ButtonGroup toggle>
+        <h6>Number of Questions:</h6>
+        <ButtonGroup toggle className="option-buttons">
           {amountRadios.map((radio, idx) => (
             <ToggleButton
               key={idx}
@@ -129,6 +132,7 @@ const Option = () => {
               variant="secondary"
               name="amount-radio"
               value={radio.value}
+              size="sm"
               checked={amount === radio.value}
               onChange={(e) => setamount(e.currentTarget.value)}
             >
@@ -139,9 +143,10 @@ const Option = () => {
 
         <Button
           variant="primary"
-          size="md"
+          size="sm"
           block
           onClick={() => startOnClick()}
+          className="start-button"
         >
           Start Game
         </Button>

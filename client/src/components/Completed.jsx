@@ -1,27 +1,32 @@
 import React, { useContext } from 'react';
-import { Button } from 'react-bootstrap';
+import { Button, Modal } from 'react-bootstrap';
 
 import { GlobalContext } from '../context/GlobalState';
 
-const Completed = () => {
-  const { score, startGame, clearQA } = useContext(GlobalContext);
-
-  const playAgainOnClick = () => {
-    clearQA();
-  };
+const Completed = (props) => {
+  const { score, clearQA } = useContext(GlobalContext);
 
   return (
-    <>
-      <h1>Score: {score}</h1>
-      <Button
-        variant="primary"
-        size="md"
-        block
-        onClick={() => playAgainOnClick()}
-      >
-        Start Game
-      </Button>
-    </>
+    <Modal
+      {...props}
+      size="lg"
+      aria-labelledby="contained-modal-title-vcenter"
+      centered
+      animation={true}
+    >
+      <Modal.Header closeButton>
+        <Modal.Title id="contained-modal-title-vcenter">
+          Trivia Quiz Completed
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <h4>Thank you for playing!</h4>
+        <p>You got {score} correct answers.</p>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button onClick={() => clearQA()}>Play Again</Button>
+      </Modal.Footer>
+    </Modal>
   );
 };
 

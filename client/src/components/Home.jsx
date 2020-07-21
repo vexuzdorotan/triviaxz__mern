@@ -10,6 +10,7 @@ import {
 import { GlobalContext } from '../context/GlobalState';
 import Completed from './Completed';
 import Option from './Option';
+import { findLastIndex } from 'lodash';
 
 const Home = () => {
   const {
@@ -17,6 +18,7 @@ const Home = () => {
     qa,
     questionNumber,
     fetchQA,
+    clearQA,
     incrementQNumber,
     score,
     saveScore,
@@ -28,6 +30,7 @@ const Home = () => {
   const [choices, setChoices] = useState([]);
   const [correct, setCorrect] = useState(true);
   const [completed, setCompleted] = useState(false);
+  const [modalShow, setModalShow] = React.useState(false);
 
   useEffect(() => {
     if (start) {
@@ -51,6 +54,12 @@ const Home = () => {
         .map((a) => a.value);
 
       setChoices(randomChoices);
+    }
+
+    if (questionNumber === qa.length && qa.length !== 0) {
+      // setTimeout(() => {
+      setModalShow(true);
+      // }, 2000);
     }
   }, [qa, questionNumber]);
 
@@ -117,7 +126,7 @@ const Home = () => {
     };
 
     return (
-      <Jumbotron className="mt-5">
+      <Jumbotron style={{ padding: '1rem' }}>
         <h4>Score: {score}</h4>
         <ProgressBar label={`${((questionNumber + 1) / qa.length) * 100}%`}>
           {progressBoolScore()}
@@ -136,6 +145,8 @@ const Home = () => {
         ) : (
           ''
         )}
+
+        <Completed show={modalShow} onHide={() => setModalShow(false)} />
       </Jumbotron>
     );
   };

@@ -7,6 +7,7 @@ import { GlobalProvider } from './context/GlobalState';
 import NavBar from './components/NavBar';
 import Home from './components/Home';
 import Scoreboard from './components/Scoreboard';
+import './App.css';
 
 const App = () => {
   return (
