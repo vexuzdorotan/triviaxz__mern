@@ -6,8 +6,6 @@ const Option = () => {
   const { setOption, startGame } = useContext(GlobalContext);
 
   const [category, setCategory] = useState('');
-  const [difficulty, setDifficulty] = useState('');
-  const [amount, setamount] = useState('');
 
   const category1Radios = [
     { name: 'Mathematics', value: '19' },
@@ -24,24 +22,12 @@ const Option = () => {
     { name: 'Books', value: '10' },
     { name: 'Vehicles', value: '28' },
   ];
-  const difficultyRadios = [
-    { name: 'Easy', value: 'easy' },
-    { name: 'Medium', value: 'medium' },
-    { name: 'Hard', value: 'hard' },
-  ];
-  const amountRadios = [
-    { name: '5', value: '5' },
-    { name: '10', value: '10' },
-    { name: '20', value: '20' },
-  ];
 
   // const radios = [category1Radios, category2Radios, category3Radios, difficultyRadios, amountRadios]
 
   const startOnClick = () => {
     setOption({
       category,
-      difficulty,
-      amount,
     });
     startGame(true);
   };
@@ -99,42 +85,6 @@ const Option = () => {
               checked={category === radio.value}
               onChange={(e) => setCategory(e.currentTarget.value)}
               style={{ display: 'block' }}
-            >
-              {radio.name}
-            </ToggleButton>
-          ))}
-        </ButtonGroup>
-
-        <h6>Select Difficulty:</h6>
-        <ButtonGroup toggle className="option-buttons">
-          {difficultyRadios.map((radio, idx) => (
-            <ToggleButton
-              key={idx}
-              type="radio"
-              variant="secondary"
-              name="difficulty-radio"
-              value={radio.value}
-              size="sm"
-              checked={difficulty === radio.value}
-              onChange={(e) => setDifficulty(e.currentTarget.value)}
-            >
-              {radio.name}
-            </ToggleButton>
-          ))}
-        </ButtonGroup>
-
-        <h6>Number of Questions:</h6>
-        <ButtonGroup toggle className="option-buttons">
-          {amountRadios.map((radio, idx) => (
-            <ToggleButton
-              key={idx}
-              type="radio"
-              variant="secondary"
-              name="amount-radio"
-              value={radio.value}
-              size="sm"
-              checked={amount === radio.value}
-              onChange={(e) => setamount(e.currentTarget.value)}
             >
               {radio.name}
             </ToggleButton>

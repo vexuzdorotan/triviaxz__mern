@@ -4,3 +4,9 @@
   gap: 0.5rem;
   margin-bottom: 0.5rem;
 }
+
+.spinner {
+  position: fixed;
+  top: 50%;
+  left: 46%;
+}

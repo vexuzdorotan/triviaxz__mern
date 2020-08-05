@@ -4,7 +4,14 @@ import { Button, Modal } from 'react-bootstrap';
 import { GlobalContext } from '../context/GlobalState';
 
 const Completed = (props) => {
-  const { score, clearQA } = useContext(GlobalContext);
+  const { score, start, clearQA } = useContext(GlobalContext);
+
+  const playAgainOnClick = () => {
+    if (start) {
+      props.onHide();
+      clearQA();
+    }
+  };
 
   return (
     <Modal
@@ -24,7 +31,7 @@ const Completed = (props) => {
         <p>You got {score} correct answers.</p>
       </Modal.Body>
       <Modal.Footer>
-        <Button onClick={() => clearQA()}>Play Again</Button>
+        <Button onClick={() => playAgainOnClick()}>Play Again</Button>
       </Modal.Footer>
     </Modal>
   );

@@ -14,11 +14,7 @@ import opentdb from '../api/opentdb';
 
 const initialState = {
   questionNumber: 0,
-  option: {
-    category: 0,
-    difficulty: '',
-    amount: 0,
-  },
+  option: {},
   qa: [],
   score: 0,
   boolScore: [],
@@ -45,14 +41,12 @@ export const GlobalProvider = ({ children }) => {
   };
 
   const fetchQA = () => async () => {
-    const { amount, category, difficulty } = state.option;
-    const type = 'multiple';
+    const { category } = state.option;
+    const amount = 2;
     const params = Object.assign(
       {},
-      amount && { amount },
       category && { category },
-      difficulty && { difficulty },
-      type && { type }
+      amount && { amount }
     );
 
     const response = await opentdb.get('', {

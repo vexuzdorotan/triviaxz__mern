@@ -151,23 +151,15 @@ const Home = () => {
     );
   };
 
-  const quizCompleted = () => {
-    if (!completed) {
-      setCompleted(true);
-    }
-
-    return <Completed />;
-  };
-
   const renderFinal = () => {
     if (!start && qa.length === 0) {
       return <Option />;
     } else if (start && qa.length === 0) {
-      return <Spinner animation="border" variant="primary" />;
+      return (
+        <Spinner animation="border" variant="primary" className="spinner" />
+      );
     } else if (start && questionNumber <= qa.length) {
       return showQuiz();
-    } else if (start && questionNumber === qa.length) {
-      return quizCompleted();
     }
   };
 

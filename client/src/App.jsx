@@ -14,7 +14,7 @@ const App = () => {
     <GlobalProvider>
       <Router history={history}>
         <NavBar />
-        <Container>
+        <Container className="mt-5">
           <Switch>
             <Route path="/" exact component={Home}></Route>
             <Route path="/scoreboard" exact component={Scoreboard}></Route>
