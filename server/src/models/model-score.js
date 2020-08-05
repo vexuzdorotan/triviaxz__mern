@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 
-const scoreSchema = new mongoose.Schema(
+const Schema = mongoose.Schema;
+
+const scoreSchema = new Schema(
   {
     scored: {
       type: Number,
@@ -14,7 +16,7 @@ const scoreSchema = new mongoose.Schema(
       type: String,
     },
     player: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       required: true,
       ref: 'User',
     },

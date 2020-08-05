@@ -1,7 +1,7 @@
 const User = require('../models/model-user');
 
 const createUser = async (req, res, next) => {
-  const { email } = req.body;
+  const { name, email, password } = req.body;
   let emailExisted;
 
   try {
@@ -11,10 +11,14 @@ const createUser = async (req, res, next) => {
   }
 
   if (emailExisted) {
-    res.status(400).send({ message: 'Email already existed.' });
+    res.status(400).send({ error: 'Email already existed.' });
   }
 
-  const user = new User(req.body);
+  const user = new User({
+    email,
+    password,
+    name,
+  });
 
   try {
     await user.save();
