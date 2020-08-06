@@ -12,7 +12,7 @@ const scoreSchema = new Schema(
       type: String,
       required: true,
     },
-    comment: {
+    note: {
       type: String,
     },
     player: {
