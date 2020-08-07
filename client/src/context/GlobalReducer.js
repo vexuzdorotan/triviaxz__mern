@@ -1,5 +1,8 @@
 import _ from 'lodash';
 
+export const RESET_HTTP_ERROR = 'RESET_HTTP_ERROR';
+export const LOGIN = 'LOGIN';
+export const LOGOUT = 'LOGOUT';
 export const START_GAME = 'START_GAME';
 export const SET_OPTION = 'SET_OPTION';
 export const FETCH_QA = 'FETCH_QA';
@@ -10,6 +13,24 @@ export const BOOL_SCORE = 'BOOL_SCORE';
 
 export default (state, action) => {
   switch (action.type) {
+    case RESET_HTTP_ERROR:
+      return {
+        ...state,
+        httpError: null,
+      };
+    case LOGIN:
+      return {
+        ...state,
+        isLoggedIn: action.payload.isLoggedIn,
+        user: action.payload.user,
+        httpError: action.payload.error,
+      };
+    case LOGOUT:
+      return {
+        ...state,
+        isLoggedIn: false,
+        user: null,
+      };
     case START_GAME:
       return {
         ...state,

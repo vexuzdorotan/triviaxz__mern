@@ -1,6 +1,9 @@
 import React, { createContext, useReducer } from 'react';
 
 import {
+  RESET_HTTP_ERROR,
+  LOGIN,
+  LOGOUT,
   SET_OPTION,
   START_GAME,
   FETCH_QA,
@@ -11,8 +14,12 @@ import {
 } from './GlobalReducer';
 import GlobalReducer from './GlobalReducer';
 import opentdb from '../api/opentdb';
+import trivia from '../api/trivia-quiz';
 
 const initialState = {
+  httpError: null,
+  isLoggedIn: false,
+  user: null,
   questionNumber: 0,
   option: {},
   qa: [],
@@ -25,6 +32,47 @@ export const GlobalContext = createContext(initialState);
 
 export const GlobalProvider = ({ children }) => {
   const [state, dispatch] = useReducer(GlobalReducer, initialState);
+
+  const resetHttpError = async () => {
+    dispatch({
+      type: RESET_HTTP_ERROR,
+    });
+  };
+
+  const login = async (email, password) => {
+    let user = null;
+    let error = null;
+    let isLoggedIn = false;
+
+    try {
+      const response = await trivia.post('/users/login', {
+        email,
+        password,
+      });
+
+      if (response.status === 200) {
+        user = response.data.user;
+        isLoggedIn = true;
+      } else if (response.status === 404) {
+        throw { message: 'Invalid credentials.' };
+      } else {
+        throw { message: 'Unknown error.' };
+      }
+    } catch (err) {
+      error = err;
+    }
+
+    dispatch({
+      type: LOGIN,
+      payload: { isLoggedIn, user, error },
+    });
+  };
+
+  const logout = () => {
+    dispatch({
+      type: LOGOUT,
+    });
+  };
 
   const startGame = (start) => {
     dispatch({
@@ -90,12 +138,18 @@ export const GlobalProvider = ({ children }) => {
   return (
     <GlobalContext.Provider
       value={{
+        httpError: state.httpError,
+        isLoggedIn: state.isLoggedIn,
+        user: state.user,
         start: state.start,
         option: state.option,
         questionNumber: state.questionNumber,
         qa: state.qa,
         score: state.score,
         boolScore: state.boolScore,
+        resetHttpError,
+        login,
+        logout,
         startGame,
         setOption,
         fetchQA,
