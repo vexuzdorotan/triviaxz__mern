@@ -2,6 +2,8 @@ import React, { createContext, useReducer } from 'react';
 
 import {
   RESET_HTTP_ERROR,
+  RESET_SIGNUP,
+  SIGNUP,
   LOGIN,
   LOGOUT,
   SET_OPTION,
@@ -19,6 +21,7 @@ import trivia from '../api/trivia-quiz';
 const initialState = {
   httpError: null,
   isLoggedIn: false,
+  isSignedUp: false,
   user: null,
   questionNumber: 0,
   option: {},
@@ -39,6 +42,34 @@ export const GlobalProvider = ({ children }) => {
     });
   };
 
+  const resetSignup = async () => {
+    dispatch({
+      type: RESET_SIGNUP,
+    });
+  };
+
+  const signup = async (name, email, password) => {
+    let error = null;
+    let isSignedUp = false;
+
+    try {
+      await trivia.post('/users', {
+        name,
+        email,
+        password,
+      });
+
+      isSignedUp = true;
+    } catch (e) {
+      error = e.response.data.error;
+    }
+
+    dispatch({
+      type: SIGNUP,
+      payload: { isSignedUp, error },
+    });
+  };
+
   const login = async (email, password) => {
     let user = null;
     let error = null;
@@ -53,13 +84,11 @@ export const GlobalProvider = ({ children }) => {
       if (response.status === 200) {
         user = response.data.user;
         isLoggedIn = true;
-      } else if (response.status === 404) {
-        throw { message: 'Invalid credentials.' };
       } else {
-        throw { message: 'Unknown error.' };
+        throw new Error(response);
       }
-    } catch (err) {
-      error = err;
+    } catch (e) {
+      error = e.response.data.error;
     }
 
     dispatch({
@@ -139,6 +168,7 @@ export const GlobalProvider = ({ children }) => {
     <GlobalContext.Provider
       value={{
         httpError: state.httpError,
+        isSignedUp: state.isSignedUp,
         isLoggedIn: state.isLoggedIn,
         user: state.user,
         start: state.start,
@@ -148,6 +178,8 @@ export const GlobalProvider = ({ children }) => {
         score: state.score,
         boolScore: state.boolScore,
         resetHttpError,
+        resetSignup,
+        signup,
         login,
         logout,
         startGame,

@@ -1,5 +1,5 @@
 import React from 'react';
-import history from './history';
+// import history from './history';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
 
@@ -12,7 +12,7 @@ import './App.css';
 const App = () => {
   return (
     <GlobalProvider>
-      <Router history={history}>
+      <Router>
         <NavBar />
         <Container className="mt-5">
           <Switch>

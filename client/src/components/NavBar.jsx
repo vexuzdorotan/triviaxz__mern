@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
-import { Link, NavLink } from 'react-router-dom';
-import { Navbar, Nav, NavDropdown, Button } from 'react-bootstrap';
+import { NavLink } from 'react-router-dom';
+import { Navbar, Nav, Button } from 'react-bootstrap';
 
 import { GlobalContext } from '../context/GlobalState';
 import Login from './Login';
@@ -51,7 +51,7 @@ const NavBar = () => {
             </span>
           </Navbar.Text>
           <Button
-            variant="outline-primary"
+            variant="outline-light"
             onClick={() => (!isLoggedIn ? setModalShow(true) : handleLogout())}
           >
             {!isLoggedIn ? 'Login' : 'Logout'}

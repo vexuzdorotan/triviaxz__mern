@@ -10,7 +10,6 @@ import {
 import { GlobalContext } from '../context/GlobalState';
 import Completed from './Completed';
 import Option from './Option';
-import { findLastIndex } from 'lodash';
 
 const Home = () => {
   const {
@@ -18,7 +17,6 @@ const Home = () => {
     qa,
     questionNumber,
     fetchQA,
-    clearQA,
     incrementQNumber,
     score,
     saveScore,
@@ -29,7 +27,6 @@ const Home = () => {
   const [alert, setAlert] = useState(false);
   const [choices, setChoices] = useState([]);
   const [correct, setCorrect] = useState(true);
-  const [completed, setCompleted] = useState(false);
   const [modalShow, setModalShow] = React.useState(false);
 
   useEffect(() => {
@@ -39,7 +36,6 @@ const Home = () => {
       setAlert(false);
       setChoices([]);
       setCorrect(true);
-      setCompleted(false);
     }
   }, [start]);
 

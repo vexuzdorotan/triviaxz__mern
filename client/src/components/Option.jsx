@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { Button, ButtonGroup, ToggleButton, Row, Col } from 'react-bootstrap';
+import { Button, ButtonGroup, ToggleButton } from 'react-bootstrap';
 import { GlobalContext } from '../context/GlobalState';
 
 const Option = () => {

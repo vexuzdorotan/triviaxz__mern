@@ -1,6 +1,6 @@
-import _ from 'lodash';
-
 export const RESET_HTTP_ERROR = 'RESET_HTTP_ERROR';
+export const RESET_SIGNUP = 'RESET_SIGNUP';
+export const SIGNUP = 'SIGNUP';
 export const LOGIN = 'LOGIN';
 export const LOGOUT = 'LOGOUT';
 export const START_GAME = 'START_GAME';
@@ -17,6 +17,17 @@ export default (state, action) => {
       return {
         ...state,
         httpError: null,
+      };
+    case RESET_SIGNUP:
+      return {
+        ...state,
+        isSignedUp: false,
+      };
+    case SIGNUP:
+      return {
+        ...state,
+        isSignedUp: action.payload.isSignedUp,
+        httpError: action.payload.error,
       };
     case LOGIN:
       return {
