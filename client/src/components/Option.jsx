@@ -1,11 +1,13 @@
-import React, { useState, useContext } from 'react';
-import { Button, ButtonGroup, ToggleButton } from 'react-bootstrap';
+import React, { useState, useEffect, useContext } from 'react';
+import { Alert, Button, ButtonGroup, ToggleButton } from 'react-bootstrap';
 import { GlobalContext } from '../context/GlobalState';
 
 const Option = () => {
   const { setOption, startGame } = useContext(GlobalContext);
 
+  const [categoryName, setCategoryName] = useState('');
   const [category, setCategory] = useState('');
+  const [alertSelect, setAlertSelect] = useState(false);
 
   const category1Radios = [
     { name: 'Mathematics', value: '19' },
@@ -25,9 +27,20 @@ const Option = () => {
 
   // const radios = [category1Radios, category2Radios, category3Radios, difficultyRadios, amountRadios]
 
+  useEffect(() => {
+    if (category !== '') {
+      setAlertSelect(false);
+    }
+  }, [category]);
+
   const startOnClick = () => {
+    if (category === '') {
+      return setAlertSelect(true);
+    }
+
     setOption({
       category,
+      categoryName,
     });
     startGame(true);
   };
@@ -35,7 +48,7 @@ const Option = () => {
   const renderList = () => {
     return (
       <>
-        <h6>Select Category:</h6>
+        <h6>Select Category: {categoryName}</h6>
 
         <ButtonGroup toggle className="option-buttons">
           {category1Radios.map((radio, idx) => (
@@ -47,7 +60,10 @@ const Option = () => {
               value={radio.value}
               size="sm"
               checked={category === radio.value}
-              onChange={(e) => setCategory(e.currentTarget.value)}
+              onChange={(e) => {
+                setCategory(e.currentTarget.value);
+                setCategoryName(radio.name);
+              }}
               className="option-button"
             >
               {radio.name}
@@ -65,7 +81,10 @@ const Option = () => {
               value={radio.value}
               size="sm"
               checked={category === radio.value}
-              onChange={(e) => setCategory(e.currentTarget.value)}
+              onChange={(e) => {
+                setCategory(e.currentTarget.value);
+                setCategoryName(radio.name);
+              }}
               style={{ display: 'block' }}
             >
               {radio.name}
@@ -83,7 +102,10 @@ const Option = () => {
               value={radio.value}
               size="sm"
               checked={category === radio.value}
-              onChange={(e) => setCategory(e.currentTarget.value)}
+              onChange={(e) => {
+                setCategory(e.currentTarget.value);
+                setCategoryName(radio.name);
+              }}
               style={{ display: 'block' }}
             >
               {radio.name}
@@ -96,10 +118,14 @@ const Option = () => {
           size="sm"
           block
           onClick={() => startOnClick()}
-          className="start-button"
+          className="start-button mb-2"
         >
           Start Game
         </Button>
+
+        {alertSelect && (
+          <Alert variant="warning">Please select a category.</Alert>
+        )}
       </>
     );
   };
