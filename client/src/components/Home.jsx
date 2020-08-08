@@ -15,6 +15,7 @@ const Home = () => {
   const {
     start,
     qa,
+    option,
     questionNumber,
     fetchQA,
     incrementQNumber,
@@ -32,7 +33,7 @@ const Home = () => {
   useEffect(() => {
     if (start) {
       fetchQA()();
-    } else if (!start) {
+    } else {
       setAlert(false);
       setChoices([]);
       setCorrect(true);
@@ -53,9 +54,7 @@ const Home = () => {
     }
 
     if (questionNumber === qa.length && qa.length !== 0) {
-      // setTimeout(() => {
       setModalShow(true);
-      // }, 2000);
     }
   }, [qa, questionNumber]);
 
@@ -115,7 +114,10 @@ const Home = () => {
 
       return (
         <>
-          <h1>Question {`${qN + 1}`}</h1>
+          <div className="d-flex justify-content-between align-items-center mb-2">
+            <h1>Question {`${qN + 1}`}</h1>
+            <h1>{option.categoryName}</h1>
+          </div>
           <span>{qa[qN].question}</span>
         </>
       );
@@ -123,7 +125,19 @@ const Home = () => {
 
     return (
       <Jumbotron style={{ padding: '1rem' }}>
-        <h4>Score: {score}</h4>
+        <div className="d-flex justify-content-between align-items-center mb-2">
+          <h4 className="m-0">Score: {score}</h4>
+          {!modalShow && questionNumber === qa.length && qa.length !== 0 && (
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={() => setModalShow(true)}
+            >
+              Save Score
+            </Button>
+          )}
+        </div>
+
         <ProgressBar label={`${((questionNumber + 1) / qa.length) * 100}%`}>
           {progressBoolScore()}
         </ProgressBar>

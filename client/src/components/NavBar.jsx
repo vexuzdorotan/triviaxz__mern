@@ -26,7 +26,7 @@ const NavBar = () => {
     <>
       <Navbar bg="dark" variant="dark">
         <Navbar.Brand as={NavLink} to="/">
-          OpenTrivia
+          Trivia Quiz by VeXuZ
         </Navbar.Brand>
 
         {/* <Navbar.Text>Score: </Navbar.Text> */}

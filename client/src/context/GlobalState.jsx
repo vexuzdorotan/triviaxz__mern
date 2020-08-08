@@ -137,9 +137,18 @@ export const GlobalProvider = ({ children }) => {
   };
 
   const clearQA = () => {
+    const resetState = {
+      questionNumber: 0,
+      option: {},
+      qa: [],
+      score: 0,
+      boolScore: [],
+      start: false,
+    };
+
     dispatch({
       type: CLEAR_QA,
-      payload: initialState,
+      payload: resetState,
     });
   };
 

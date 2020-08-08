@@ -1,11 +1,24 @@
 import React, { useState, useContext } from 'react';
-import { Button, Modal, Alert } from 'react-bootstrap';
+import {
+  Button,
+  Modal,
+  Alert,
+  FormControl,
+  FormGroup,
+  FormLabel,
+  FormText,
+} from 'react-bootstrap';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
+import pluralize from 'pluralize';
 
 import trivia from '../api/trivia-quiz';
 import { GlobalContext } from '../context/GlobalState';
 
 const Completed = (props) => {
-  const { user, score, option, start, clearQA } = useContext(GlobalContext);
+  const { isLoggedIn, user, score, option, start, clearQA } = useContext(
+    GlobalContext
+  );
   const [clickedSave, setClickedSave] = useState(false);
   const [alertSave, setAlertSave] = useState(null);
 
@@ -22,12 +35,11 @@ const Completed = (props) => {
 
         message = 'Successfully saved to scoreboard.';
         variant = 'success';
+        setClickedSave(true);
       } catch (error) {
         message = 'Unknown error. Failed to save to scoreboard.';
         variant = 'danger';
       }
-
-      setClickedSave(true);
     } else {
       message = 'Already saved to scoreboard.';
       variant = 'warning';
@@ -46,6 +58,13 @@ const Completed = (props) => {
     }
   };
 
+  const CompleteSchema = Yup.object().shape({
+    name: Yup.string()
+      .min(5, 'Must be 5 characters or more.')
+      .max(15, 'Must be 15 characters or less.')
+      .required('Please enter your name.'),
+  });
+
   return (
     <Modal
       {...props}
@@ -61,8 +80,50 @@ const Completed = (props) => {
       </Modal.Header>
       <Modal.Body>
         <h4>Thank you for playing!</h4>
-        <p>You got {score} correct answers.</p>
-        {clickedSave && (
+        <p>
+          You got {score} correct {pluralize('answer', score)}.
+        </p>
+        {!isLoggedIn && (
+          <Formik
+            initialValues={{
+              name: 'Guest',
+            }}
+            validationSchema={CompleteSchema}
+            onSubmit={(values, { setSubmitting }) => {
+              setSubmitting(false);
+            }}
+          >
+            {({
+              values,
+              errors,
+              touched,
+              handleChange,
+              handleBlur,
+              isSubmitting,
+            }) => (
+              <Form>
+                <Field>
+                  {() => (
+                    <FormGroup controlId="name">
+                      <FormLabel>Name: </FormLabel>
+                      <FormControl
+                        type="text"
+                        name="name"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        value={values.name}
+                        isInvalid={touched.name && errors.name}
+                      />
+                      <ErrorMessage name="name" component={FormText} />
+                    </FormGroup>
+                  )}
+                </Field>
+              </Form>
+            )}
+          </Formik>
+        )}
+
+        {alertSave && (
           <Alert variant={alertSave.variant}>{alertSave.message}</Alert>
         )}
       </Modal.Body>

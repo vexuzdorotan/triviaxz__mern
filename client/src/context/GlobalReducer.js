@@ -61,7 +61,10 @@ export default (state, action) => {
       };
 
     case CLEAR_QA:
-      return action.payload;
+      return {
+        ...state,
+        ...action.payload,
+      };
 
     case INC_QNUMBER:
       return {
