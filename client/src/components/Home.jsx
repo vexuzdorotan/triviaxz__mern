@@ -44,7 +44,7 @@ const Home = () => {
     if (questionNumber < qa.length) {
       const randomChoices = [
         ...qa[questionNumber].incorrect_answers,
-        `${qa[questionNumber].correct_answer} ^_^`,
+        qa[questionNumber].correct_answer,
       ]
         .map((a) => ({ sort: Math.random(), value: a }))
         .sort((a, b) => a.sort - b.sort)
@@ -99,7 +99,7 @@ const Home = () => {
             key={i}
             block
           >
-            {choice}
+            {atob(choice)}
           </Button>
         );
       });
@@ -118,7 +118,7 @@ const Home = () => {
             <h1>Question {`${qN + 1}`}</h1>
             <h1>{option.categoryName}</h1>
           </div>
-          <span>{qa[qN].question}</span>
+          <span>{atob(qa[qN].question)}</span>
         </>
       );
     };
@@ -148,9 +148,9 @@ const Home = () => {
           <Alert variant={correct ? 'success' : 'danger'}>
             {correct
               ? 'Correct!'
-              : `Wrong! Correct answer: ${
+              : `Wrong! Correct answer: ${atob(
                   qa[questionNumber - 1].correct_answer
-                }`}
+                )}`}
           </Alert>
         ) : (
           ''

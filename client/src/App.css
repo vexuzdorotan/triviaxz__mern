@@ -10,3 +10,12 @@
   top: 50%;
   left: 46%;
 }
+
+.table th {
+  text-align: center;
+}
+
+.table td,
+.table th {
+  white-space: nowrap;
+}

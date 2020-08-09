@@ -16,9 +16,16 @@ const scoreSchema = new Schema(
       type: String,
     },
     player: {
-      type: Schema.Types.ObjectId,
-      required: true,
-      ref: 'User',
+      _id: {
+        type: Schema.Types.ObjectId,
+        required: true,
+        ref: 'User',
+      },
+      name: {
+        type: String,
+        required: true,
+        ref: 'User',
+      },
     },
   },
   {

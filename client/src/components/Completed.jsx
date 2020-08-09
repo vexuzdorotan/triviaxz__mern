@@ -13,23 +13,29 @@ import * as Yup from 'yup';
 import pluralize from 'pluralize';
 
 import trivia from '../api/trivia-quiz';
+import Login from './Login';
 import { GlobalContext } from '../context/GlobalState';
 
 const Completed = (props) => {
   const { isLoggedIn, user, score, option, start, clearQA } = useContext(
     GlobalContext
   );
+  const [modalShow, setModalShow] = useState(false);
   const [clickedSave, setClickedSave] = useState(false);
   const [alertSave, setAlertSave] = useState(null);
+  const [note, setNote] = useState('');
 
   const saveOnClick = async () => {
+    if (!isLoggedIn) return setModalShow(true);
+
     let message, variant;
     if (!clickedSave) {
+      console.log(note);
       try {
         await trivia.post('/scores', {
           scored: score,
           category: option.categoryName,
-          note: '',
+          note,
           player: user._id,
         });
 
@@ -59,34 +65,32 @@ const Completed = (props) => {
   };
 
   const CompleteSchema = Yup.object().shape({
-    name: Yup.string()
-      .min(5, 'Must be 5 characters or more.')
-      .max(15, 'Must be 15 characters or less.')
-      .required('Please enter your name.'),
+    note: Yup.string().max(15, 'Must be 15 characters or less.'),
   });
 
   return (
-    <Modal
-      {...props}
-      size="lg"
-      aria-labelledby="contained-modal-title-vcenter"
-      centered
-      animation={true}
-    >
-      <Modal.Header closeButton>
-        <Modal.Title id="contained-modal-title-vcenter">
-          Trivia Quiz Completed
-        </Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <h4>Thank you for playing!</h4>
-        <p>
-          You got {score} correct {pluralize('answer', score)}.
-        </p>
-        {!isLoggedIn && (
+    <>
+      <Modal
+        {...props}
+        size="lg"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+        animation={true}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="contained-modal-title-vcenter">
+            Trivia Quiz Completed
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <h4>Thank you for playing!</h4>
+          <p>
+            You got {score} correct {pluralize('answer', score)}.
+          </p>
+
           <Formik
             initialValues={{
-              name: 'Guest',
+              note: '',
             }}
             validationSchema={CompleteSchema}
             onSubmit={(values, { setSubmitting }) => {
@@ -104,34 +108,45 @@ const Completed = (props) => {
               <Form>
                 <Field>
                   {() => (
-                    <FormGroup controlId="name">
-                      <FormLabel>Name: </FormLabel>
+                    <FormGroup controlId="note">
+                      <FormLabel>Note: </FormLabel>
                       <FormControl
                         type="text"
-                        name="name"
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        value={values.name}
-                        isInvalid={touched.name && errors.name}
+                        name="note"
+                        onChange={(e) => {
+                          handleChange(e);
+
+                          setNote(e.target.value);
+                        }}
+                        onBlur={(e) => {
+                          handleBlur(e);
+                        }}
+                        value={values.note}
+                        isInvalid={touched.note && errors.note}
                       />
-                      <ErrorMessage name="name" component={FormText} />
+                      <ErrorMessage name="note" component={FormText} />
                     </FormGroup>
                   )}
                 </Field>
               </Form>
             )}
           </Formik>
-        )}
 
-        {alertSave && (
-          <Alert variant={alertSave.variant}>{alertSave.message}</Alert>
-        )}
-      </Modal.Body>
-      <Modal.Footer>
-        <Button onClick={() => saveOnClick()}>Save to Scoreboard</Button>
-        <Button onClick={() => playAgainOnClick()}>Play Again</Button>
-      </Modal.Footer>
-    </Modal>
+          {alertSave && (
+            <Alert variant={alertSave.variant}>{alertSave.message}</Alert>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button onClick={() => saveOnClick()}>
+            {!isLoggedIn && 'Login to '}Save to Scoreboard
+          </Button>
+          <Button onClick={() => playAgainOnClick()}>Play Again</Button>
+        </Modal.Footer>
+      </Modal>
+      {!isLoggedIn && (
+        <Login show={modalShow} onHide={() => setModalShow(false)} />
+      )}
+    </>
   );
 };
 

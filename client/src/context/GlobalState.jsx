@@ -121,7 +121,7 @@ export const GlobalProvider = ({ children }) => {
     const { category } = state.option;
     const amount = 2;
     const params = Object.assign(
-      {},
+      { encode: 'base64' },
       category && { category },
       amount && { amount }
     );

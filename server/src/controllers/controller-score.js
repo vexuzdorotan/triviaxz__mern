@@ -7,13 +7,19 @@ const Score = require('../models/model-score');
 
 const createScore = async (req, res, next) => {
   try {
-    const user = await User.findById(req.body.player);
+    const { scored, category, note, player } = req.body;
+    const user = await User.findById(player, '_id name');
 
     if (!user) {
       return res.status(404).send({ error: 'User not found.' });
     }
 
-    const score = new Score(req.body);
+    const score = new Score({
+      scored,
+      category,
+      note,
+    });
+    score.player = user;
     await score.save();
     res.status(201).send(score);
   } catch (error) {
