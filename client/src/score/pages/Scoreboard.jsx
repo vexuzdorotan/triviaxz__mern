@@ -2,8 +2,8 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Table } from 'react-bootstrap';
 import moment from 'moment';
 
-import { GlobalContext } from '../context/GlobalState';
-import trivia from '../api/trivia-quiz';
+import { GlobalContext } from '../../shared/context/GlobalState';
+import trivia from '../../shared/api/trivia-quiz';
 
 const Scoreboard = () => {
   const { user } = useContext(GlobalContext);

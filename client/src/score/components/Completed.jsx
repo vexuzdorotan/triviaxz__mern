@@ -12,9 +12,9 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import pluralize from 'pluralize';
 
-import trivia from '../api/trivia-quiz';
-import Login from './Login';
-import { GlobalContext } from '../context/GlobalState';
+import trivia from '../../shared/api/trivia-quiz';
+import Login from '../../user/pages/Login';
+import { GlobalContext } from '../../shared/context/GlobalState';
 
 const Completed = (props) => {
   const { isLoggedIn, user, score, option, start, clearQA } = useContext(

@@ -1,12 +1,11 @@
 import React from 'react';
-// import history from './history';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
 
-import { GlobalProvider } from './context/GlobalState';
-import NavBar from './components/NavBar';
-import Home from './components/Home';
-import Scoreboard from './components/Scoreboard';
+import { GlobalProvider } from './shared/context/GlobalState';
+import NavBar from './shared/components/NavBar';
+import Home from './score/pages/Home';
+import Scoreboard from './score/pages/Scoreboard';
 import './App.css';
 
 const App = () => {

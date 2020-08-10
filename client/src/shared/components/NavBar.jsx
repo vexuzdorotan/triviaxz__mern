@@ -1,15 +1,15 @@
-import React, { useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { NavLink } from 'react-router-dom';
 import { Navbar, Nav, Button } from 'react-bootstrap';
 
 import { GlobalContext } from '../context/GlobalState';
-import Login from './Login';
+import Login from '../../user/pages/Login';
 
 const NavBar = () => {
   const { isLoggedIn, logout, user, start, clearQA } = useContext(
     GlobalContext
   );
-  const [modalShow, setModalShow] = React.useState(false);
+  const [modalShow, setModalShow] = useState(false);
 
   const homeOnClick = () => {
     if (start) {
@@ -25,11 +25,12 @@ const NavBar = () => {
   return (
     <>
       <Navbar bg="dark" variant="dark">
-        <Navbar.Brand as={NavLink} to="/">
-          Trivia Quiz by VeXuZ
+        <Navbar.Brand as={NavLink} to="/" className="font-weight-bolder">
+          Tri<span className="text-primary">V</span>ia
+          <span className="text-primary">X</span>
+          <span className="text-primary">Z</span>
         </Navbar.Brand>
 
-        {/* <Navbar.Text>Score: </Navbar.Text> */}
         <Nav variant="pills" defaultActiveKey="/">
           <Nav.Item>
             <Nav.Link as={NavLink} to="/" exact onClick={() => homeOnClick()}>

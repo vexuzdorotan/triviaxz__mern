@@ -10,7 +10,7 @@ import {
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 
-import { GlobalContext } from '../context/GlobalState';
+import { GlobalContext } from '../../shared/context/GlobalState';
 
 const Login = (props) => {
   const {
@@ -65,7 +65,7 @@ const Login = (props) => {
     >
       <Modal.Header closeButton>
         <Modal.Title id="contained-modal-title-vcenter">
-          {isSignupMode ? 'Sign up to' : 'Login to'} Trivia Quiz
+          {isSignupMode ? 'Sign up to' : 'Login to'} TriViaXZ
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>

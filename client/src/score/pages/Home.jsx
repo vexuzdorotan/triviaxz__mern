@@ -7,9 +7,9 @@ import {
   Spinner,
 } from 'react-bootstrap';
 
-import { GlobalContext } from '../context/GlobalState';
-import Completed from './Completed';
-import Option from './Option';
+import { GlobalContext } from '../../shared/context/GlobalState';
+import Completed from '../components/Completed';
+import Option from '../components/Option';
 
 const Home = () => {
   const {
@@ -25,10 +25,10 @@ const Home = () => {
     setBoolScore,
   } = useContext(GlobalContext);
 
-  const [alert, setAlert] = useState(false);
   const [choices, setChoices] = useState([]);
+  const [alert, setAlert] = useState(false);
   const [correct, setCorrect] = useState(true);
-  const [modalShow, setModalShow] = React.useState(false);
+  const [modalShow, setModalShow] = useState(false);
 
   useEffect(() => {
     if (start) {

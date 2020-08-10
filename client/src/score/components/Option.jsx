@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Alert, Button, ButtonGroup, ToggleButton } from 'react-bootstrap';
-import { GlobalContext } from '../context/GlobalState';
+import { GlobalContext } from '../../shared/context/GlobalState';
 
 const Option = () => {
   const { setOption, startGame } = useContext(GlobalContext);
