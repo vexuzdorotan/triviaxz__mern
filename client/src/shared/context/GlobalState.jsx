@@ -48,16 +48,18 @@ export const GlobalProvider = ({ children }) => {
     });
   };
 
-  const signup = async (name, email, password) => {
+  const signup = async (name, email, password, image) => {
     let error = null;
     let isSignedUp = false;
 
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('email', email);
+    formData.append('password', password);
+    formData.append('image', image);
+
     try {
-      await trivia.post('/users', {
-        name,
-        email,
-        password,
-      });
+      await trivia.post('/users', formData);
 
       isSignedUp = true;
     } catch (e) {

@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Navbar, Nav, Button } from 'react-bootstrap';
+import { Navbar, Nav, Image, Button } from 'react-bootstrap';
 
 import { GlobalContext } from '../context/GlobalState';
 import Login from '../../user/pages/Login';
@@ -45,6 +45,13 @@ const NavBar = () => {
         </Nav>
 
         <Nav className="ml-auto">
+          <Image
+            src="https://picsum.photos/200"
+            className="my-auto mr-2"
+            roundedCircle
+            fluid
+            style={{ height: '6vh' }}
+          />
           <Navbar.Text className="mr-2">
             Login as{' '}
             <span className="text-light">

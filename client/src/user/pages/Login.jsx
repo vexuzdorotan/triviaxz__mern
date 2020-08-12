@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import {
   Button,
   Modal,
@@ -6,6 +6,10 @@ import {
   FormGroup,
   FormLabel,
   FormText,
+  FormFile,
+  Image,
+  Row,
+  Col,
 } from 'react-bootstrap';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
@@ -22,7 +26,11 @@ const Login = (props) => {
     login,
   } = useContext(GlobalContext);
 
+  const filePickerRef = useRef();
+
   const [isSignupMode, setIsSignupMode] = useState(false);
+  const [file, setFile] = useState();
+  const [previewFile, setPreviewFile] = useState();
 
   useEffect(() => {
     if (isSignedUp) {
@@ -30,6 +38,46 @@ const Login = (props) => {
       resetSignup();
     }
   }, [isSignedUp]);
+
+  useEffect(() => {
+    if (!file) {
+      return;
+    }
+
+    const fileReader = new FileReader();
+    fileReader.onload = () => {
+      setPreviewFile(fileReader.result);
+    };
+    fileReader.readAsDataURL(file);
+  }, [file]);
+
+  const pickedHandler = (event) => {
+    let pickedFile;
+    // let fileIsValid = isValid;
+    if (event.target.files && event.target.files.length === 1) {
+      pickedFile = event.target.files[0];
+      setFile(pickedFile);
+      // setIsValid(true);
+      // fileIsValid = true;
+    }
+    console.log(pickedFile);
+    // else {
+    //   setIsValid(false);
+    //   fileIsValid = false;
+    // }
+  };
+
+  const pickImageHandler = () => {
+    filePickerRef.current.click();
+  };
+
+  const FILE_SIZE = 160 * 1024;
+  const SUPPORTED_FORMATS = [
+    'image/jpg',
+    'image/jpeg',
+    'image/gif',
+    'image/png',
+  ];
 
   const loginShape = {
     name: Yup.string()
@@ -47,6 +95,18 @@ const Login = (props) => {
         'Both password need to be the same'
       ),
     }),
+    file: Yup.mixed()
+      .required('Please upload valid image.')
+      .test(
+        'fileSize',
+        'File too large',
+        (value) => value && value.size <= FILE_SIZE
+      )
+      .test(
+        'fileFormat',
+        'Unsupported Format',
+        (value) => value && SUPPORTED_FORMATS.includes(value.type)
+      ),
   };
 
   if (!isSignupMode) {
@@ -75,14 +135,17 @@ const Login = (props) => {
             email: '',
             password: '',
             confirmPassword: '',
+            file: '',
           }}
           validationSchema={LoginSchema}
           onSubmit={(values, { setSubmitting }) => {
             if (isSignupMode) {
-              signup(values.name, values.email, values.password);
+              signup(values.name, values.email, values.password, values.file);
             } else {
               login(values.email, values.password);
             }
+            console.log(values);
+            alert(values);
             setSubmitting(false);
           }}
         >
@@ -93,6 +156,7 @@ const Login = (props) => {
             handleChange,
             handleBlur,
             isSubmitting,
+            setFieldValue,
           }) => (
             <Form>
               {isSignupMode && (
@@ -182,6 +246,38 @@ const Login = (props) => {
                     </FormGroup>
                   )}
                 </Field>
+              )}
+
+              {isSignupMode && (
+                <Row className="mb-2">
+                  <Col className="align-self-center">
+                    <Field>
+                      {() => (
+                        <FormGroup controlId="file">
+                          <FormLabel>Upload File: </FormLabel>
+
+                          <FormFile
+                            name="file"
+                            accept=".jpg,.png,.jpeg"
+                            onChange={(event) => {
+                              handleChange(event);
+                              pickedHandler(event);
+                              setFieldValue(
+                                'file',
+                                event.currentTarget.files[0]
+                              );
+                            }}
+                            isInvalid={touched.file && errors.file}
+                          />
+                          <ErrorMessage name="file" component={FormText} />
+                        </FormGroup>
+                      )}
+                    </Field>
+                  </Col>
+                  <Col className="align-self-center">
+                    {previewFile && <Image src={previewFile} rounded fluid />}
+                  </Col>
+                </Row>
               )}
 
               {httpError && (
