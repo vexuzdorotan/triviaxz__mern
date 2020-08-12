@@ -53,17 +53,11 @@ const Login = (props) => {
 
   const pickedHandler = (event) => {
     let pickedFile;
-    // let fileIsValid = isValid;
     if (event.target.files && event.target.files.length === 1) {
       pickedFile = event.target.files[0];
       setFile(pickedFile);
-      // setIsValid(true);
-      // fileIsValid = true;
     }
-    console.log(pickedFile);
     // else {
-    //   setIsValid(false);
-    //   fileIsValid = false;
     // }
   };
 
@@ -112,6 +106,7 @@ const Login = (props) => {
   if (!isSignupMode) {
     delete loginShape.name;
     delete loginShape.confirmPassword;
+    delete loginShape.file;
   }
   const LoginSchema = Yup.object().shape(loginShape);
 
@@ -125,7 +120,7 @@ const Login = (props) => {
     >
       <Modal.Header closeButton>
         <Modal.Title id="contained-modal-title-vcenter">
-          {isSignupMode ? 'Sign up to' : 'Login to'} TriViaXZ
+          {isSignupMode ? 'Sign up to' : 'Login to'} triViaXZ
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
@@ -144,8 +139,6 @@ const Login = (props) => {
             } else {
               login(values.email, values.password);
             }
-            console.log(values);
-            alert(values);
             setSubmitting(false);
           }}
         >

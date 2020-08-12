@@ -4,7 +4,7 @@ const loginUser = async (req, res, next) => {
   const { email, password } = req.body;
 
   try {
-    const user = await User.findOne({ email }, 'email name password');
+    const user = await User.findOne({ email }, 'email name password image');
 
     if (!user || password !== user.password)
       return res.status(404).send({ error: 'Incorrect email or password.' });
@@ -15,6 +15,7 @@ const loginUser = async (req, res, next) => {
         _id: user._id,
         name: user.name,
         email: user.email,
+        image: user.image,
       },
     });
   } catch (error) {
@@ -24,14 +25,19 @@ const loginUser = async (req, res, next) => {
 
 const createUser = async (req, res, next) => {
   try {
-    const { email } = req.body;
+    const { name, email, password } = req.body;
     const emailExisted = await User.findOne({ email });
 
     if (emailExisted) {
       return res.status(400).send({ error: 'Email already existed.' });
     }
 
-    const user = new User(req.body);
+    const user = new User({
+      name,
+      email,
+      password,
+      image: req.file.path,
+    });
     await user.save();
     res.status(201).send();
   } catch (error) {

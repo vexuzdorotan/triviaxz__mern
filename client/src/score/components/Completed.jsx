@@ -30,7 +30,6 @@ const Completed = (props) => {
 
     let message, variant;
     if (!clickedSave) {
-      console.log(note);
       try {
         await trivia.post('/scores', {
           scored: score,

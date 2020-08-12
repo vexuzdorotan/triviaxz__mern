@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Table } from 'react-bootstrap';
+import { Table, Image } from 'react-bootstrap';
 import moment from 'moment';
 
 import { GlobalContext } from '../../shared/context/GlobalState';
@@ -36,7 +36,16 @@ const Scoreboard = () => {
           {loadedScores &&
             loadedScores.map((score, i) => (
               <tr key={i}>
-                <td>{score.player.name}</td>
+                <td>
+                  <Image
+                    src={`http://localhost:5000/${score.player.image}`}
+                    className="my-auto mr-1"
+                    roundedCircle
+                    fluid
+                    style={{ height: '3vh' }}
+                  />
+                  {score.player.name}
+                </td>
                 <td>{score.scored}</td>
                 <td>{score.category}</td>
                 <td>{score.note}</td>

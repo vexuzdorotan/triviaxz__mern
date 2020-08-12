@@ -1,3 +1,6 @@
+const fs = require('fs');
+const path = require('path');
+
 const express = require('express');
 require('./db/mongoose')();
 require('dotenv').config({ path: './config/config.env' });
@@ -9,6 +12,8 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 app.use(express.json());
+
+app.use('/uploads/images', express.static(path.join('uploads', 'images')));
 
 app.use((req, res, next) => {
   res.set({

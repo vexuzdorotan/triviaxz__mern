@@ -26,6 +26,11 @@ const scoreSchema = new Schema(
         required: true,
         ref: 'User',
       },
+      image: {
+        type: String,
+        required: true,
+        ref: 'User',
+      },
     },
   },
   {

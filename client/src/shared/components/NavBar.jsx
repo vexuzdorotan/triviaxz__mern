@@ -26,7 +26,7 @@ const NavBar = () => {
     <>
       <Navbar bg="dark" variant="dark">
         <Navbar.Brand as={NavLink} to="/" className="font-weight-bolder">
-          Tri<span className="text-primary">V</span>ia
+          tri<span className="text-primary">V</span>ia
           <span className="text-primary">X</span>
           <span className="text-primary">Z</span>
         </Navbar.Brand>
@@ -45,13 +45,15 @@ const NavBar = () => {
         </Nav>
 
         <Nav className="ml-auto">
-          <Image
-            src="https://picsum.photos/200"
-            className="my-auto mr-2"
-            roundedCircle
-            fluid
-            style={{ height: '6vh' }}
-          />
+          {isLoggedIn && (
+            <Image
+              src={`http://localhost:5000/${user.image}`}
+              className="my-auto mr-2"
+              roundedCircle
+              fluid
+              style={{ height: '6vh' }}
+            />
+          )}
           <Navbar.Text className="mr-2">
             Login as{' '}
             <span className="text-light">
