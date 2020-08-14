@@ -137,7 +137,7 @@ const Login = (props) => {
             if (isSignupMode) {
               signup(values.name, values.email, values.password, values.file);
             } else {
-              login(values.email, values.password);
+              login(values.email, values.password, null);
             }
             setSubmitting(false);
           }}
@@ -273,9 +273,7 @@ const Login = (props) => {
                 </Row>
               )}
 
-              {httpError && (
-                <FormText className="text-warning">{httpError}</FormText>
-              )}
+              {httpError && <h6 className="text-danger mb-2">{httpError}</h6>}
 
               <Button type="submit" disabled={isSubmitting} block>
                 {isSignupMode ? 'Sign up' : 'Login'}

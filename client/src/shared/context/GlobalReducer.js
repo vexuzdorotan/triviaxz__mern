@@ -55,9 +55,18 @@ export default (state, action) => {
       };
 
     case FETCH_QA:
+      const qa = action.payload.map((item) => {
+        item.question = atob(item.question);
+        item.correct_answer = atob(item.correct_answer);
+        item.incorrect_answers = item.incorrect_answers.map((answer) => {
+          answer = atob(answer);
+          return answer;
+        });
+        return item;
+      });
       return {
         ...state,
-        qa: action.payload,
+        qa,
       };
 
     case CLEAR_QA:

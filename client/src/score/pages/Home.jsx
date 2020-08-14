@@ -32,7 +32,7 @@ const Home = () => {
 
   useEffect(() => {
     if (start) {
-      fetchQA()();
+      fetchQA();
     } else {
       setAlert(false);
       setChoices([]);
@@ -60,8 +60,7 @@ const Home = () => {
 
   const answerOnClick = (ans) => {
     if (questionNumber < qa.length) {
-      const correct =
-        qa[questionNumber].correct_answer + ' ^_^' === ans ? true : false;
+      const correct = qa[questionNumber].correct_answer === ans ? true : false;
 
       if (correct) {
         saveScore(score + 1);
@@ -99,7 +98,7 @@ const Home = () => {
             key={i}
             block
           >
-            {atob(choice)}
+            {choice}
           </Button>
         );
       });
@@ -118,7 +117,7 @@ const Home = () => {
             <h1>Question {`${qN + 1}`}</h1>
             <h1>{option.categoryName}</h1>
           </div>
-          <span>{atob(qa[qN].question)}</span>
+          <span>{qa[qN].question}</span>
         </>
       );
     };
@@ -148,9 +147,9 @@ const Home = () => {
           <Alert variant={correct ? 'success' : 'danger'}>
             {correct
               ? 'Correct!'
-              : `Wrong! Correct answer: ${atob(
+              : `Wrong! Correct answer: ${
                   qa[questionNumber - 1].correct_answer
-                )}`}
+                }`}
           </Alert>
         ) : (
           ''

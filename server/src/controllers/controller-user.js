@@ -1,13 +1,24 @@
+const bcrypt = require('bcryptjs');
+
 const User = require('../models/model-user');
 
 const loginUser = async (req, res, next) => {
   const { email, password } = req.body;
 
   try {
-    const user = await User.findOne({ email }, 'email name password image');
+    const user = await User.findOne(
+      { email },
+      'email name password image tokens'
+    );
 
-    if (!user || password !== user.password)
+    const isMatchPassword = await bcrypt.compare(password, user.password);
+
+    if (!user || !isMatchPassword)
       return res.status(404).send({ error: 'Incorrect email or password.' });
+
+    const token = await user.generateAuthToken();
+
+    console.log(token);
 
     res.send({
       message: 'Logged in!',
@@ -16,10 +27,25 @@ const loginUser = async (req, res, next) => {
         name: user.name,
         email: user.email,
         image: user.image,
+        token,
       },
     });
   } catch (error) {
-    res.status(401).send(error);
+    res.status(401).send({ error: "User doesn't exist." });
+  }
+};
+
+const logoutUser = async (req, res, next) => {
+  try {
+    const { _id } = req.user;
+
+    const user = await User.findById(_id);
+    user.tokens = [];
+
+    await user.save();
+    res.status(200).send({ message: 'Logout successfully.' });
+  } catch (error) {
+    res.status(400).send({ error });
   }
 };
 
@@ -39,7 +65,8 @@ const createUser = async (req, res, next) => {
       image: req.file.path,
     });
     await user.save();
-    res.status(201).send();
+    const token = await user.generateAuthToken();
+    res.status(201).send({ user, token });
   } catch (error) {
     res.status(400).send(error);
   }
@@ -56,5 +83,6 @@ const readUsers = async (req, res, next) => {
 };
 
 exports.loginUser = loginUser;
+exports.logoutUser = logoutUser;
 exports.createUser = createUser;
 exports.readUsers = readUsers;

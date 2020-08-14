@@ -1,4 +1,4 @@
-import React, { createContext, useReducer } from 'react';
+import React, { createContext, useReducer, useCallback } from 'react';
 
 import {
   RESET_HTTP_ERROR,
@@ -72,34 +72,66 @@ export const GlobalProvider = ({ children }) => {
     });
   };
 
-  const login = async (email, password) => {
+  const login = useCallback(async (email, password, userData) => {
     let user = null;
     let error = null;
     let isLoggedIn = false;
 
-    try {
-      const response = await trivia.post('/users/login', {
-        email,
-        password,
-      });
+    if (!email && !password && userData) {
+      isLoggedIn = true;
+      user = userData;
+    } else {
+      try {
+        const response = await trivia.post('/users/login', {
+          email,
+          password,
+        });
 
-      if (response.status === 200) {
-        user = response.data.user;
-        isLoggedIn = true;
-      } else {
-        throw new Error(response);
+        if (response.status === 200) {
+          user = response.data.user;
+          isLoggedIn = true;
+        } else {
+          throw new Error(response);
+        }
+
+        localStorage.setItem(
+          'userData',
+          JSON.stringify({
+            ...user,
+          })
+        );
+      } catch (e) {
+        console.log(e);
+        console.log(e.response);
+        error = e.response.data.error;
       }
-    } catch (e) {
-      error = e.response.data.error;
     }
 
     dispatch({
       type: LOGIN,
       payload: { isLoggedIn, user, error },
     });
-  };
+  }, []);
 
-  const logout = () => {
+  const logout = async () => {
+    const userData = JSON.parse(localStorage.getItem('userData'));
+
+    console.log(userData.token);
+
+    try {
+      await trivia.post(
+        '/users/logout',
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${userData.token}`,
+          },
+        }
+      );
+    } catch (error) {}
+
+    localStorage.removeItem('userData');
+
     dispatch({
       type: LOGOUT,
     });
@@ -119,7 +151,7 @@ export const GlobalProvider = ({ children }) => {
     });
   };
 
-  const fetchQA = () => async () => {
+  const fetchQA = async () => {
     const { category } = state.option;
     const amount = 2;
     const params = Object.assign(
