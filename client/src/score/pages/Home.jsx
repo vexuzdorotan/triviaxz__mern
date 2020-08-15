@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useRef, useState, useEffect, useContext } from 'react';
 import {
   Jumbotron,
   Button,
@@ -25,10 +25,44 @@ const Home = () => {
     setBoolScore,
   } = useContext(GlobalContext);
 
+  const [playingStatus, setPlayingStatus] = useState('OPTION'); // OPTION, LOADING, PLAYING, COMPLETED
+  const [timer, setTimer] = useState(10);
   const [choices, setChoices] = useState([]);
   const [alert, setAlert] = useState(false);
   const [correct, setCorrect] = useState(true);
+  const [disableToAnswer, setDisableToAnswer] = useState(false);
   const [modalShow, setModalShow] = useState(false);
+  const intervalId = useRef(null);
+
+  useEffect(() => {
+    if (!start && qa.length === 0) {
+      setPlayingStatus('OPTION');
+    } else if (start && qa.length === 0) {
+      setPlayingStatus('LOADING');
+    } else if (start && qa.length > questionNumber) {
+      setPlayingStatus('PLAYING');
+    } else if (qa.length === questionNumber) {
+      setPlayingStatus('COMPLETED');
+      setModalShow(true);
+    }
+  }, [start, qa, questionNumber]);
+
+  useEffect(() => {
+    if (timer === 0) {
+      stopInterval();
+    }
+  }, [timer]);
+
+  const startInterval = () => {
+    setTimer(10);
+    intervalId.current = window.setInterval(() => {
+      setTimer((time) => time - 1);
+    }, 1000);
+  };
+
+  const stopInterval = () => {
+    window.clearInterval(intervalId.current);
+  };
 
   useEffect(() => {
     if (start) {
@@ -51,16 +85,17 @@ const Home = () => {
         .map((a) => a.value);
 
       setChoices(randomChoices);
-    }
-
-    if (questionNumber === qa.length && qa.length !== 0) {
-      setModalShow(true);
+      startInterval();
     }
   }, [qa, questionNumber]);
 
   const answerOnClick = (ans) => {
+    if (disableToAnswer) return;
     if (questionNumber < qa.length) {
       const correct = qa[questionNumber].correct_answer === ans ? true : false;
+
+      stopInterval();
+      setDisableToAnswer(true);
 
       if (correct) {
         saveScore(score + 1);
@@ -71,7 +106,14 @@ const Home = () => {
 
       setCorrect(correct);
       setAlert(true);
-      incrementQNumber(questionNumber);
+
+      setTimeout(() => {
+        setAlert(false);
+        if (playingStatus !== 'COMPLETED') {
+          incrementQNumber(questionNumber);
+        }
+        setDisableToAnswer(false);
+      }, 3000);
     }
   };
 
@@ -126,6 +168,7 @@ const Home = () => {
       <Jumbotron style={{ padding: '1rem' }}>
         <div className="d-flex justify-content-between align-items-center mb-2">
           <h4 className="m-0">Score: {score}</h4>
+          <h3>{timer}</h3>
           {!modalShow && questionNumber === qa.length && qa.length !== 0 && (
             <Button
               variant="primary"
@@ -144,35 +187,32 @@ const Home = () => {
         <hr />
         <p>{answerButtons()}</p>
         {alert ? (
-          <Alert variant={correct ? 'success' : 'danger'}>
+          <Alert
+            variant={correct ? 'success' : 'danger'}
+            className="vxz-blinking"
+          >
             {correct
               ? 'Correct!'
-              : `Wrong! Correct answer: ${
-                  qa[questionNumber - 1].correct_answer
-                }`}
+              : `Wrong! Correct answer: ${qa[questionNumber].correct_answer}`}
           </Alert>
         ) : (
           ''
         )}
-
-        <Completed show={modalShow} onHide={() => setModalShow(false)} />
       </Jumbotron>
     );
   };
 
-  const renderFinal = () => {
-    if (!start && qa.length === 0) {
-      return <Option />;
-    } else if (start && qa.length === 0) {
-      return (
+  return (
+    <>
+      <Completed show={modalShow} onHide={() => setModalShow(false)} />
+      {playingStatus === 'OPTION' && <Option />}
+      {playingStatus === 'LOADING' && (
         <Spinner animation="border" variant="primary" className="spinner" />
-      );
-    } else if (start && questionNumber <= qa.length) {
-      return showQuiz();
-    }
-  };
-
-  return <>{renderFinal()}</>;
+      )}
+      {(playingStatus === 'PLAYING' || playingStatus === 'COMPLETED') &&
+        showQuiz()}
+    </>
+  );
 };
 
 export default Home;

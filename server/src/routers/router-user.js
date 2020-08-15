@@ -7,7 +7,10 @@ const fileUpload = require('../middleware/file-upload');
 
 router.post('/login', usersController.loginUser);
 router.post('/logout', auth, usersController.logoutUser);
-router.post('/', fileUpload.single('image'), usersController.createUser);
-router.get('/', usersController.readUsers);
+
+router
+  .route('/')
+  .get(usersController.readUsers)
+  .post(fileUpload.single('image'), usersController.createUser);
 
 module.exports = router;

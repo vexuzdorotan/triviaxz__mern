@@ -19,3 +19,29 @@
 .table th {
   white-space: nowrap;
 }
+
+/* Blink Alert */
+.vxz-blinking {
+  animation: blinker 1.6s infinite;
+}
+
+@keyframes blinker {
+  /* 50% {
+    opacity: 0;
+  } */
+  0% {
+    opacity: 1;
+  }
+  49% {
+    opacity: 1;
+  }
+  60% {
+    opacity: 0;
+  }
+  99% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}

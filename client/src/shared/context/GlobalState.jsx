@@ -101,8 +101,6 @@ export const GlobalProvider = ({ children }) => {
           })
         );
       } catch (e) {
-        console.log(e);
-        console.log(e.response);
         error = e.response.data.error;
       }
     }
@@ -115,8 +113,6 @@ export const GlobalProvider = ({ children }) => {
 
   const logout = async () => {
     const userData = JSON.parse(localStorage.getItem('userData'));
-
-    console.log(userData.token);
 
     try {
       await trivia.post(
@@ -187,6 +183,10 @@ export const GlobalProvider = ({ children }) => {
   };
 
   const incrementQNumber = (n) => {
+    if (state.qa.length === n - 1) {
+      return;
+    }
+
     dispatch({
       type: INC_QNUMBER,
       payload: n,
