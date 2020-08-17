@@ -17,9 +17,16 @@ import Login from '../../user/pages/Login';
 import { GlobalContext } from '../../shared/context/GlobalState';
 
 const Completed = (props) => {
-  const { isLoggedIn, user, score, option, start, clearQA } = useContext(
-    GlobalContext
-  );
+  const {
+    isLoggedIn,
+    user,
+    playingStatus,
+    setPlayingStatus,
+    score,
+    option,
+    start,
+    clearQA,
+  } = useContext(GlobalContext);
   const [modalShow, setModalShow] = useState(false);
   const [clickedSave, setClickedSave] = useState(false);
   const [alertSave, setAlertSave] = useState(null);
@@ -35,7 +42,6 @@ const Completed = (props) => {
           scored: score,
           category: option.categoryName,
           note,
-          player: user._id,
         });
 
         message = 'Successfully saved to scoreboard.';
@@ -58,6 +64,7 @@ const Completed = (props) => {
 
   const playAgainOnClick = () => {
     if (start) {
+      setPlayingStatus('OPTION');
       props.onHide();
       clearQA();
     }
@@ -78,7 +85,7 @@ const Completed = (props) => {
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            Trivia Quiz Completed
+            triViaXZ Completed
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>

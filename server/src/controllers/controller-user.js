@@ -18,8 +18,6 @@ const loginUser = async (req, res, next) => {
 
     const token = await user.generateAuthToken();
 
-    console.log(token);
-
     res.send({
       message: 'Logged in!',
       user: {

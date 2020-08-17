@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 const express = require('express');
+const cors = require('cors');
 require('./db/mongoose')();
 require('dotenv').config({ path: './config/config.env' });
 
@@ -15,16 +16,7 @@ app.use(express.json());
 
 app.use('/uploads/images', express.static(path.join('uploads', 'images')));
 
-app.use((req, res, next) => {
-  res.set({
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers':
-      'Origin, X-Requested-With, Content-Type, Accept, Authorization',
-    'Access-Control-Allow-Methods': 'GET, POST, PATCH, DELETE',
-  });
-
-  next();
-});
+app.use(cors());
 
 app.use('/api/users', userRouters);
 app.use('/api/scores', scoreRouters);

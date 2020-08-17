@@ -13,6 +13,8 @@ import Option from '../components/Option';
 
 const Home = () => {
   const {
+    playingStatus,
+    setPlayingStatus,
     start,
     qa,
     option,
@@ -25,7 +27,7 @@ const Home = () => {
     setBoolScore,
   } = useContext(GlobalContext);
 
-  const [playingStatus, setPlayingStatus] = useState('OPTION'); // OPTION, LOADING, PLAYING, COMPLETED
+  // OPTION, LOADING, PLAYING, COMPLETED
   const [timer, setTimer] = useState(10);
   const [choices, setChoices] = useState([]);
   const [alert, setAlert] = useState(false);
@@ -35,23 +37,10 @@ const Home = () => {
   const intervalId = useRef(null);
 
   useEffect(() => {
-    if (!start && qa.length === 0) {
-      setPlayingStatus('OPTION');
-    } else if (start && qa.length === 0) {
-      setPlayingStatus('LOADING');
-    } else if (start && qa.length > questionNumber) {
-      setPlayingStatus('PLAYING');
-    } else if (qa.length === questionNumber) {
-      setPlayingStatus('COMPLETED');
-      setModalShow(true);
-    }
-  }, [start, qa, questionNumber]);
-
-  useEffect(() => {
-    if (timer === 0) {
+    if (timer === 0 || playingStatus !== 'PLAYING') {
       stopInterval();
     }
-  }, [timer]);
+  }, [timer, playingStatus]);
 
   const startInterval = () => {
     setTimer(10);
@@ -109,7 +98,13 @@ const Home = () => {
 
       setTimeout(() => {
         setAlert(false);
-        if (playingStatus !== 'COMPLETED') {
+
+        if (qa.length === questionNumber + 1) {
+          setPlayingStatus('COMPLETED');
+          setModalShow(true);
+        }
+
+        if (qa.length !== questionNumber + 1) {
           incrementQNumber(questionNumber);
         }
         setDisableToAnswer(false);

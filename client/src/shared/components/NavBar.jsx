@@ -6,9 +6,15 @@ import { GlobalContext } from '../context/GlobalState';
 import Login from '../../user/pages/Login';
 
 const NavBar = () => {
-  const { isLoggedIn, login, logout, user, start, clearQA } = useContext(
-    GlobalContext
-  );
+  const {
+    isLoggedIn,
+    login,
+    logout,
+    user,
+    setPlayingStatus,
+    start,
+    clearQA,
+  } = useContext(GlobalContext);
   const [modalShow, setModalShow] = useState(false);
 
   useEffect(() => {
@@ -22,6 +28,7 @@ const NavBar = () => {
   const homeOnClick = () => {
     if (start) {
       clearQA();
+      setPlayingStatus('OPTION');
     }
   };
 

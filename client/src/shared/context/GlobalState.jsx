@@ -7,6 +7,7 @@ import {
   LOGIN,
   LOGOUT,
   SET_OPTION,
+  PLAYING_STATUS,
   START_GAME,
   FETCH_QA,
   CLEAR_QA,
@@ -23,6 +24,7 @@ const initialState = {
   isLoggedIn: false,
   isSignedUp: false,
   user: null,
+  playingStatus: 'OPTION',
   questionNumber: 0,
   option: {},
   qa: [],
@@ -112,24 +114,20 @@ export const GlobalProvider = ({ children }) => {
   }, []);
 
   const logout = async () => {
-    const userData = JSON.parse(localStorage.getItem('userData'));
-
     try {
-      await trivia.post(
-        '/users/logout',
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${userData.token}`,
-          },
-        }
-      );
+      await trivia.post('/users/logout');
+      localStorage.removeItem('userData');
     } catch (error) {}
-
-    localStorage.removeItem('userData');
 
     dispatch({
       type: LOGOUT,
+    });
+  };
+
+  const setPlayingStatus = (playingStatus) => {
+    dispatch({
+      type: PLAYING_STATUS,
+      payload: playingStatus,
     });
   };
 
@@ -148,6 +146,7 @@ export const GlobalProvider = ({ children }) => {
   };
 
   const fetchQA = async () => {
+    setPlayingStatus('LOADING');
     const { category } = state.option;
     const amount = 2;
     const params = Object.assign(
@@ -164,6 +163,7 @@ export const GlobalProvider = ({ children }) => {
       type: FETCH_QA,
       payload: response.data.results,
     });
+    setPlayingStatus('PLAYING');
   };
 
   const clearQA = () => {
@@ -183,10 +183,6 @@ export const GlobalProvider = ({ children }) => {
   };
 
   const incrementQNumber = (n) => {
-    if (state.qa.length === n - 1) {
-      return;
-    }
-
     dispatch({
       type: INC_QNUMBER,
       payload: n,
@@ -214,6 +210,7 @@ export const GlobalProvider = ({ children }) => {
         isSignedUp: state.isSignedUp,
         isLoggedIn: state.isLoggedIn,
         user: state.user,
+        playingStatus: state.playingStatus,
         start: state.start,
         option: state.option,
         questionNumber: state.questionNumber,
@@ -225,6 +222,7 @@ export const GlobalProvider = ({ children }) => {
         signup,
         login,
         logout,
+        setPlayingStatus,
         startGame,
         setOption,
         fetchQA,

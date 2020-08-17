@@ -3,6 +3,7 @@ export const RESET_SIGNUP = 'RESET_SIGNUP';
 export const SIGNUP = 'SIGNUP';
 export const LOGIN = 'LOGIN';
 export const LOGOUT = 'LOGOUT';
+export const PLAYING_STATUS = 'PLAYING_STATUS';
 export const START_GAME = 'START_GAME';
 export const SET_OPTION = 'SET_OPTION';
 export const FETCH_QA = 'FETCH_QA';
@@ -41,6 +42,11 @@ export default (state, action) => {
         ...state,
         isLoggedIn: false,
         user: null,
+      };
+    case PLAYING_STATUS:
+      return {
+        ...state,
+        playingStatus: action.payload,
       };
     case START_GAME:
       return {
