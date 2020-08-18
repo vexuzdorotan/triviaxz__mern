@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { Navbar, Nav, Image, Button } from 'react-bootstrap';
+import jwt from 'jsonwebtoken';
 
 import { GlobalContext } from '../context/GlobalState';
 import Login from '../../user/pages/Login';
@@ -21,7 +22,18 @@ const NavBar = () => {
     const userData = JSON.parse(localStorage.getItem('userData'));
 
     if (userData && userData.token && !isLoggedIn) {
-      login(null, null, userData);
+      try {
+        const decoded = jwt.verify(userData.token, 'vexuzgwapo');
+        const remainingTime = decoded.exp * 1000 - new Date().getTime();
+
+        setTimeout(() => {
+          logout();
+        }, remainingTime);
+
+        login(null, null, userData);
+      } catch (error) {
+        logout();
+      }
     }
   }, [login, isLoggedIn]);
 

@@ -45,3 +45,10 @@
     opacity: 1;
   }
 }
+
+/* Scoreboard */
+.vxz-scoreboard-button {
+  font-size: 12px;
+  padding: 0 2px 0;
+  margin-left: 0.5rem;
+}

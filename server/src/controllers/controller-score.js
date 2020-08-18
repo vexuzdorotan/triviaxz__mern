@@ -28,8 +28,18 @@ const createScore = async (req, res, next) => {
 };
 
 const readScores = async (req, res, next) => {
+  // sortBy=createdAt:desc
+  // createdAt : -1
+  const sort = {};
+
+  if (req.query.sortBy) {
+    const parts = req.query.sortBy.split(':');
+
+    sort[parts[0]] = parts[1] === 'desc' ? -1 : 1;
+  }
+
   try {
-    const score = await Score.find();
+    const score = await Score.find().sort(sort);
     res.status(200).send(score);
   } catch (error) {
     res.status(400).send(error);

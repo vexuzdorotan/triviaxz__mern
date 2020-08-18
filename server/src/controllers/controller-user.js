@@ -1,4 +1,6 @@
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
 const User = require('../models/model-user');
 
@@ -17,6 +19,7 @@ const loginUser = async (req, res, next) => {
       return res.status(404).send({ error: 'Incorrect email or password.' });
 
     const token = await user.generateAuthToken();
+    const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
 
     res.send({
       message: 'Logged in!',
@@ -26,6 +29,7 @@ const loginUser = async (req, res, next) => {
         email: user.email,
         image: user.image,
         token,
+        exp: decoded.exp,
       },
     });
   } catch (error) {
@@ -35,7 +39,7 @@ const loginUser = async (req, res, next) => {
 
 const logoutUser = async (req, res, next) => {
   try {
-    const { _id } = req.user;
+    const { _id } = req.body;
 
     const user = await User.findById(_id);
     user.tokens = [];

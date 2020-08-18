@@ -1,4 +1,5 @@
 import React, { createContext, useReducer, useCallback } from 'react';
+import jwt from 'jsonwebtoken';
 
 import {
   RESET_HTTP_ERROR,
@@ -102,6 +103,11 @@ export const GlobalProvider = ({ children }) => {
             ...user,
           })
         );
+
+        const remainingTime = user.exp * 1000 - new Date().getTime();
+        setTimeout(() => {
+          logout();
+        }, remainingTime);
       } catch (e) {
         error = e.response.data.error;
       }
@@ -115,9 +121,15 @@ export const GlobalProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      await trivia.post('/users/logout');
+      await trivia.post('/users/logout', {
+        logout: true,
+        _id: JSON.parse(localStorage.getItem('userData'))._id,
+      });
+
       localStorage.removeItem('userData');
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
 
     dispatch({
       type: LOGOUT,

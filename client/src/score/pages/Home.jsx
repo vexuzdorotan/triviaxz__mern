@@ -28,7 +28,7 @@ const Home = () => {
   } = useContext(GlobalContext);
 
   // OPTION, LOADING, PLAYING, COMPLETED
-  const [timer, setTimer] = useState(10);
+  const [timer, setTimer] = useState(3);
   const [choices, setChoices] = useState([]);
   const [alert, setAlert] = useState(false);
   const [correct, setCorrect] = useState(true);
@@ -38,12 +38,13 @@ const Home = () => {
 
   useEffect(() => {
     if (timer === 0 || playingStatus !== 'PLAYING') {
+      answerOnClick(null);
       stopInterval();
     }
   }, [timer, playingStatus]);
 
   const startInterval = () => {
-    setTimer(10);
+    setTimer(3);
     intervalId.current = window.setInterval(() => {
       setTimer((time) => time - 1);
     }, 1000);
@@ -81,10 +82,10 @@ const Home = () => {
   const answerOnClick = (ans) => {
     if (disableToAnswer) return;
     if (questionNumber < qa.length) {
-      const correct = qa[questionNumber].correct_answer === ans ? true : false;
+      const correct = qa[questionNumber].correct_answer === ans;
 
-      stopInterval();
       setDisableToAnswer(true);
+      stopInterval();
 
       if (correct) {
         saveScore(score + 1);
@@ -101,7 +102,9 @@ const Home = () => {
 
         if (qa.length === questionNumber + 1) {
           setPlayingStatus('COMPLETED');
+          setDisableToAnswer(true);
           setModalShow(true);
+          return;
         }
 
         if (qa.length !== questionNumber + 1) {
@@ -188,7 +191,7 @@ const Home = () => {
           >
             {correct
               ? 'Correct!'
-              : `Wrong! Correct answer: ${qa[questionNumber].correct_answer}`}
+              : `Oops! Correct answer: ${qa[questionNumber].correct_answer}`}
           </Alert>
         ) : (
           ''
