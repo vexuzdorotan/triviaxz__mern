@@ -4,7 +4,7 @@ import { Container } from 'react-bootstrap';
 
 import { GlobalProvider } from './shared/context/GlobalState';
 import NavBar from './shared/components/NavBar';
-import Home from './score/pages/Home';
+import Play from './score/pages/Play';
 import Scoreboard from './score/pages/Scoreboard';
 import './App.css';
 
@@ -15,7 +15,7 @@ const App = () => {
         <NavBar />
         <Container className="mt-5">
           <Switch>
-            <Route path="/" exact component={Home}></Route>
+            <Route path="/" exact component={Play}></Route>
             <Route path="/scoreboard" exact component={Scoreboard}></Route>
           </Switch>
         </Container>

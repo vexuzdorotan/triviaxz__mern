@@ -3,7 +3,7 @@ import { Button } from 'react-bootstrap';
 
 import trivia from '../../shared/api/trivia-quiz';
 
-const ModifyButtons = ({ score, modifiedScore }) => {
+const ModifyButtons = ({ score, modifiedScore, edit }) => {
   const scoreOnDelete = async () => {
     try {
       await trivia.delete(`/scores/${score._id}`);
@@ -29,6 +29,10 @@ const ModifyButtons = ({ score, modifiedScore }) => {
             variant="outline-warning"
             size="sm"
             className="vxz-scoreboard-button"
+            onClick={() => {
+              edit(score);
+              modifiedScore(undefined);
+            }}
           >
             Edit
           </Button>

@@ -23,19 +23,23 @@ const NavBar = () => {
 
     if (userData && userData.token && !isLoggedIn) {
       try {
-        const decoded = jwt.verify(userData.token, 'vexuzgwapo');
-        const remainingTime = decoded.exp * 1000 - new Date().getTime();
+        const decoded = jwt.verify(
+          userData.token,
+          process.env.REACT_APP_JWT_SECRET_KEY
+        );
 
+        const remainingTime = decoded.exp * 1000 - new Date().getTime();
         setTimeout(() => {
           logout();
         }, remainingTime);
 
         login(null, null, userData);
       } catch (error) {
+        console.log(error);
         logout();
       }
     }
-  }, [login, isLoggedIn]);
+  }, [isLoggedIn, login, logout]);
 
   const homeOnClick = () => {
     if (start) {

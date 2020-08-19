@@ -11,7 +11,7 @@ import { GlobalContext } from '../../shared/context/GlobalState';
 import Completed from '../components/Completed';
 import Option from '../components/Option';
 
-const Home = () => {
+const Play = () => {
   const {
     playingStatus,
     setPlayingStatus,
@@ -36,13 +36,6 @@ const Home = () => {
   const [modalShow, setModalShow] = useState(false);
   const intervalId = useRef(null);
 
-  useEffect(() => {
-    if (timer === 0 || playingStatus !== 'PLAYING') {
-      answerOnClick(null);
-      stopInterval();
-    }
-  }, [timer, playingStatus]);
-
   const startInterval = () => {
     setTimer(3);
     intervalId.current = window.setInterval(() => {
@@ -62,7 +55,7 @@ const Home = () => {
       setChoices([]);
       setCorrect(true);
     }
-  }, [start]);
+  }, [start, fetchQA]);
 
   useEffect(() => {
     if (questionNumber < qa.length) {
@@ -114,6 +107,13 @@ const Home = () => {
       }, 3000);
     }
   };
+
+  useEffect(() => {
+    if (timer === 0 || playingStatus !== 'PLAYING') {
+      answerOnClick(null);
+      stopInterval();
+    }
+  }, [timer, playingStatus]);
 
   const showQuiz = () => {
     const progressBoolScore = () => {
@@ -213,4 +213,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Play;

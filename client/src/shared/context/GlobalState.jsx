@@ -1,5 +1,4 @@
 import React, { createContext, useReducer, useCallback } from 'react';
-import jwt from 'jsonwebtoken';
 
 import {
   RESET_HTTP_ERROR,
@@ -45,11 +44,11 @@ export const GlobalProvider = ({ children }) => {
     });
   };
 
-  const resetSignup = async () => {
+  const resetSignup = useCallback(async () => {
     dispatch({
       type: RESET_SIGNUP,
     });
-  };
+  }, []);
 
   const signup = async (name, email, password, image) => {
     let error = null;
@@ -75,51 +74,7 @@ export const GlobalProvider = ({ children }) => {
     });
   };
 
-  const login = useCallback(async (email, password, userData) => {
-    let user = null;
-    let error = null;
-    let isLoggedIn = false;
-
-    if (!email && !password && userData) {
-      isLoggedIn = true;
-      user = userData;
-    } else {
-      try {
-        const response = await trivia.post('/users/login', {
-          email,
-          password,
-        });
-
-        if (response.status === 200) {
-          user = response.data.user;
-          isLoggedIn = true;
-        } else {
-          throw new Error(response);
-        }
-
-        localStorage.setItem(
-          'userData',
-          JSON.stringify({
-            ...user,
-          })
-        );
-
-        const remainingTime = user.exp * 1000 - new Date().getTime();
-        setTimeout(() => {
-          logout();
-        }, remainingTime);
-      } catch (e) {
-        error = e.response.data.error;
-      }
-    }
-
-    dispatch({
-      type: LOGIN,
-      payload: { isLoggedIn, user, error },
-    });
-  }, []);
-
-  const logout = async () => {
+  const logout = useCallback(async () => {
     try {
       await trivia.post('/users/logout', {
         logout: true,
@@ -134,7 +89,54 @@ export const GlobalProvider = ({ children }) => {
     dispatch({
       type: LOGOUT,
     });
-  };
+  }, []);
+
+  const login = useCallback(
+    async (email, password, userData) => {
+      let user = null;
+      let error = null;
+      let isLoggedIn = false;
+
+      if (!email && !password && userData) {
+        isLoggedIn = true;
+        user = userData;
+      } else {
+        try {
+          const response = await trivia.post('/users/login', {
+            email,
+            password,
+          });
+
+          if (response.status === 200) {
+            user = response.data.user;
+            isLoggedIn = true;
+          } else {
+            throw new Error(response);
+          }
+
+          localStorage.setItem(
+            'userData',
+            JSON.stringify({
+              ...user,
+            })
+          );
+
+          const remainingTime = user.exp * 1000 - new Date().getTime();
+          setTimeout(() => {
+            logout();
+          }, remainingTime);
+        } catch (e) {
+          error = e.response.data.error;
+        }
+      }
+
+      dispatch({
+        type: LOGIN,
+        payload: { isLoggedIn, user, error },
+      });
+    },
+    [logout]
+  );
 
   const setPlayingStatus = (playingStatus) => {
     dispatch({
@@ -157,7 +159,7 @@ export const GlobalProvider = ({ children }) => {
     });
   };
 
-  const fetchQA = async () => {
+  const fetchQA = useCallback(async () => {
     setPlayingStatus('LOADING');
     const { category } = state.option;
     const amount = 2;
@@ -176,7 +178,7 @@ export const GlobalProvider = ({ children }) => {
       payload: response.data.results,
     });
     setPlayingStatus('PLAYING');
-  };
+  }, [state.option]);
 
   const clearQA = () => {
     const resetState = {

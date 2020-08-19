@@ -53,7 +53,7 @@ userSchema.methods.generateAuthToken = async function () {
     },
     process.env.JWT_SECRET_KEY,
     {
-      expiresIn: 10,
+      expiresIn: '1hr',
     }
   );
 

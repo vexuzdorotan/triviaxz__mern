@@ -1,5 +1,7 @@
 import React, { useState, useContext } from 'react';
 import {
+  Row,
+  Col,
   Button,
   Modal,
   Alert,
@@ -19,8 +21,6 @@ import { GlobalContext } from '../../shared/context/GlobalState';
 const Completed = (props) => {
   const {
     isLoggedIn,
-    user,
-    playingStatus,
     setPlayingStatus,
     score,
     option,
@@ -100,6 +100,7 @@ const Completed = (props) => {
             }}
             validationSchema={CompleteSchema}
             onSubmit={(values, { setSubmitting }) => {
+              saveOnClick();
               setSubmitting(false);
             }}
           >
@@ -134,6 +135,16 @@ const Completed = (props) => {
                     </FormGroup>
                   )}
                 </Field>
+                <Row>
+                  <Col className="text-right mb-2">
+                    <Button type="submit" disabled={isSubmitting}>
+                      {!isLoggedIn && 'Login to '}Save to Scoreboard
+                    </Button>
+                    <Button onClick={() => playAgainOnClick()} className="ml-2">
+                      Play Again
+                    </Button>
+                  </Col>
+                </Row>
               </Form>
             )}
           </Formik>
@@ -142,12 +153,6 @@ const Completed = (props) => {
             <Alert variant={alertSave.variant}>{alertSave.message}</Alert>
           )}
         </Modal.Body>
-        <Modal.Footer>
-          <Button onClick={() => saveOnClick()}>
-            {!isLoggedIn && 'Login to '}Save to Scoreboard
-          </Button>
-          <Button onClick={() => playAgainOnClick()}>Play Again</Button>
-        </Modal.Footer>
       </Modal>
       {!isLoggedIn && (
         <Login show={modalShow} onHide={() => setModalShow(false)} />

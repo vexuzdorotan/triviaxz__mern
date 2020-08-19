@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useRef } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   Button,
   Modal,
@@ -26,8 +26,6 @@ const Login = (props) => {
     login,
   } = useContext(GlobalContext);
 
-  const filePickerRef = useRef();
-
   const [isSignupMode, setIsSignupMode] = useState(false);
   const [file, setFile] = useState();
   const [previewFile, setPreviewFile] = useState();
@@ -37,7 +35,7 @@ const Login = (props) => {
       setIsSignupMode(false);
       resetSignup();
     }
-  }, [isSignedUp]);
+  }, [isSignedUp, resetSignup]);
 
   useEffect(() => {
     if (!file) {
@@ -57,12 +55,6 @@ const Login = (props) => {
       pickedFile = event.target.files[0];
       setFile(pickedFile);
     }
-    // else {
-    // }
-  };
-
-  const pickImageHandler = () => {
-    filePickerRef.current.click();
   };
 
   const FILE_SIZE = 160 * 1024;
