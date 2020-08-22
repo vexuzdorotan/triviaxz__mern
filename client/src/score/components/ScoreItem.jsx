@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import { Link, useParams } from 'react-router-dom';
 import { Image } from 'react-bootstrap';
 import moment from 'moment';
 
@@ -6,7 +7,8 @@ import { GlobalContext } from '../../shared/context/GlobalState';
 import ModifyButtons from './ModifyButtons';
 
 const ScoreItem = ({ score, setSelectedId, setLoadedScores, setModalShow }) => {
-  const { isLoggedIn } = useContext(GlobalContext);
+  const { isLoggedIn, user } = useContext(GlobalContext);
+  const playerId = useParams().playerId;
 
   const handleModifiedScore = (id) => {
     setLoadedScores((prevScores) =>
@@ -21,16 +23,21 @@ const ScoreItem = ({ score, setSelectedId, setLoadedScores, setModalShow }) => {
 
   return (
     <tr key={score._id}>
-      <td>
-        <Image
-          src={`http://localhost:5000/${score.player.image}`}
-          className="my-auto mr-1"
-          roundedCircle
-          fluid
-          style={{ height: '3vh' }}
-        />
-        {score.player.name}
-      </td>
+      {((user && user._id !== playerId) || !isLoggedIn) && (
+        <td>
+          <Image
+            src={`http://localhost:5000/${score.player.image}`}
+            className="my-auto mr-1"
+            roundedCircle
+            fluid
+            style={{ height: '3vh' }}
+          />
+
+          <Link to={`/scoreboard/${score.player._id}`} className="text-light">
+            {score.player.name}
+          </Link>
+        </td>
+      )}
       <td>{score.scored}</td>
       <td>{score.category}</td>
       <td>{score.note}</td>

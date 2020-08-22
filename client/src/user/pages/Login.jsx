@@ -125,12 +125,13 @@ const Login = (props) => {
             file: '',
           }}
           validationSchema={LoginSchema}
-          onSubmit={(values, { setSubmitting }) => {
+          onSubmit={(values, { setSubmitting, resetForm }) => {
             if (isSignupMode) {
               signup(values.name, values.email, values.password, values.file);
             } else {
               login(values.email, values.password, null);
             }
+            resetForm({});
             setSubmitting(false);
           }}
         >

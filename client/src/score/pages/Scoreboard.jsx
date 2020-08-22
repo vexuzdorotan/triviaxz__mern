@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Table } from 'react-bootstrap';
+import { useParams } from 'react-router-dom';
+import { Table, Spinner, Button } from 'react-bootstrap';
 
 import { GlobalContext } from '../../shared/context/GlobalState';
 import trivia from '../../shared/api/trivia-quiz';
@@ -7,21 +8,42 @@ import EditNote from '../components/EditNote';
 import ScoreItem from '../components/ScoreItem';
 
 const Scoreboard = () => {
-  const { isLoggedIn } = useContext(GlobalContext);
+  const { isLoggedIn, user, logout, clearQA } = useContext(GlobalContext);
   const [loadedScores, setLoadedScores] = useState();
   const [selectedScore, setSelectedId] = useState();
+  const [playerName, setPlayerName] = useState('');
   const [modalShow, setModalShow] = useState(false);
+  const playerId = useParams().playerId;
 
   useEffect(() => {
+    clearQA();
+    setLoadedScores(undefined);
     const fetchScores = async () => {
       try {
-        const response = await trivia.get('/scores/?sortBy=createdAt:desc');
+        const url = playerId
+          ? `/scores/record/${playerId}`
+          : '/scores/?sortBy=createdAt:desc';
+        const response = await trivia.get(url);
+
+        if (response.data.length > 0)
+          setPlayerName(response.data[0].player.name);
 
         setLoadedScores(response.data);
-      } catch (error) {}
+      } catch (error) {
+        console.log(error);
+        setPlayerName(error.response.data.name);
+      }
     };
     fetchScores();
-  }, []);
+  }, [playerId, clearQA]);
+
+  const deleteUserOnClick = async () => {
+    try {
+      await trivia.delete('/users/delete');
+      localStorage.removeItem('userData');
+      logout(true);
+    } catch (error) {}
+  };
 
   const renderTable = () => {
     return (
@@ -33,10 +55,15 @@ const Scoreboard = () => {
           setLoadedScores={setLoadedScores}
         />
 
+        <h4>
+          {(playerId && (playerName || <Spinner animation="grow" />)) ||
+            'All Players'}
+        </h4>
+
         <Table striped bordered hover size="sm" responsive="lg" variant="dark">
           <thead>
             <tr>
-              <th>Player</th>
+              {user && user._id !== playerId && <th>Player</th>}
               <th>Score</th>
               <th>Category</th>
               <th>Note</th>
@@ -57,6 +84,16 @@ const Scoreboard = () => {
               ))}
           </tbody>
         </Table>
+        {user && user._id === playerId && (
+          <Button
+            variant="outline-danger"
+            size="sm"
+            className="float-right"
+            onClick={() => deleteUserOnClick()}
+          >
+            Delete My Account
+          </Button>
+        )}
       </>
     );
   };

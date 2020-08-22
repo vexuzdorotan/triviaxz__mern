@@ -7,6 +7,7 @@ const fileUpload = require('../middleware/file-upload');
 
 router.post('/login', usersController.loginUser);
 router.post('/logout', auth, usersController.logoutUser);
+router.delete('/delete', auth, usersController.deleteUser);
 
 router
   .route('/')

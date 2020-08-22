@@ -48,17 +48,24 @@ const Play = () => {
   };
 
   useEffect(() => {
-    if (start) {
+    let isMounted = true;
+
+    if (start && isMounted) {
       fetchQA();
+      setDisableToAnswer(false);
     } else {
       setAlert(false);
       setChoices([]);
       setCorrect(true);
     }
+
+    return () => (isMounted = false);
   }, [start, fetchQA]);
 
   useEffect(() => {
-    if (questionNumber < qa.length) {
+    let isMounted = true;
+
+    if (isMounted && questionNumber < qa.length) {
       const randomChoices = [
         ...qa[questionNumber].incorrect_answers,
         qa[questionNumber].correct_answer,
@@ -70,6 +77,11 @@ const Play = () => {
       setChoices(randomChoices);
       startInterval();
     }
+
+    return () => {
+      stopInterval();
+      isMounted = false;
+    };
   }, [qa, questionNumber]);
 
   const answerOnClick = (ans) => {
@@ -109,10 +121,14 @@ const Play = () => {
   };
 
   useEffect(() => {
-    if (timer === 0 || playingStatus !== 'PLAYING') {
+    let isMounted = true;
+
+    if ((isMounted && timer === 0) || playingStatus !== 'PLAYING') {
       answerOnClick(null);
       stopInterval();
     }
+
+    return () => (isMounted = false);
   }, [timer, playingStatus]);
 
   const showQuiz = () => {
@@ -167,7 +183,7 @@ const Play = () => {
         <div className="d-flex justify-content-between align-items-center mb-2">
           <h4 className="m-0">Score: {score}</h4>
           <h3>{timer}</h3>
-          {!modalShow && questionNumber === qa.length && qa.length !== 0 && (
+          {!modalShow && playingStatus === 'COMPLETED' && (
             <Button
               variant="primary"
               size="sm"

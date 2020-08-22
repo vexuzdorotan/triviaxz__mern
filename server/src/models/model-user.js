@@ -4,6 +4,8 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
+const Score = require('./model-score');
+
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema(
@@ -53,7 +55,7 @@ userSchema.methods.generateAuthToken = async function () {
     },
     process.env.JWT_SECRET_KEY,
     {
-      expiresIn: '1hr',
+      expiresIn: '7d',
     }
   );
 
@@ -70,6 +72,11 @@ userSchema.pre('save', async function (next) {
   }
 
   next();
+});
+
+userSchema.pre('remove', async function (next) {
+  const user = this;
+  await Score.deleteMany({ player: user._id });
 });
 
 module.exports = mongoose.model('User', userSchema);

@@ -17,6 +17,11 @@ const App = () => {
           <Switch>
             <Route path="/" exact component={Play}></Route>
             <Route path="/scoreboard" exact component={Scoreboard}></Route>
+            <Route
+              path="/scoreboard/:playerId"
+              exact
+              component={Scoreboard}
+            ></Route>
           </Switch>
         </Container>
       </Router>

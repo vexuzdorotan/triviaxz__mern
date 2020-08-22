@@ -39,9 +39,8 @@ const loginUser = async (req, res, next) => {
 
 const logoutUser = async (req, res, next) => {
   try {
-    const { _id } = req.body;
-
-    const user = await User.findById(_id);
+    // console.log(req.user);
+    const user = await User.findById(req.user._id);
     user.tokens = [];
 
     await user.save();
@@ -84,7 +83,17 @@ const readUsers = async (req, res, next) => {
   }
 };
 
+const deleteUser = async (req, res, next) => {
+  try {
+    await req.user.remove();
+    res.send(req.user);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
+
 exports.loginUser = loginUser;
 exports.logoutUser = logoutUser;
 exports.createUser = createUser;
 exports.readUsers = readUsers;
+exports.deleteUser = deleteUser;

@@ -1,14 +1,10 @@
-const mongoose = require('mongoose');
-const uuid = require('uuid');
-const validator = require('validator');
-
 const User = require('../models/model-user');
 const Score = require('../models/model-score');
 
 const createScore = async (req, res, next) => {
   try {
     const { scored, category, note } = req.body;
-    const user = await User.findById(req.user._id, '_id name image');
+    const user = await User.findById(req.user._id);
 
     if (!user) {
       return res.status(404).send({ error: 'User not found.' });
@@ -39,8 +35,18 @@ const readScores = async (req, res, next) => {
   }
 
   try {
-    const score = await Score.find().sort(sort);
-    res.status(200).send(score);
+    // const score = await Score.find().sort(sort);
+    await Score.find()
+      .sort(sort)
+      // .populate('player', 'name image')
+      .populate({
+        path: 'player',
+        select: 'name image',
+      })
+      .exec((err, score) => {
+        if (err) throw new Error(err);
+        res.status(200).send(score);
+      });
   } catch (error) {
     res.status(400).send(error);
   }
@@ -48,13 +54,21 @@ const readScores = async (req, res, next) => {
 
 const readScoresByUser = async (req, res, next) => {
   try {
-    const scores = await Score.find({ player: req.params.uid });
+    const user = await User.findById(req.params.uid, 'name');
+    await Score.find({ player: req.params.uid })
+      .sort({ createdAt: -1 })
+      .populate('player', 'name image')
+      .exec((err, score) => {
+        if (err) throw new Error(err);
+        console.log(score);
+        if (!score || score.length === 0) {
+          return res
+            .status(404)
+            .send({ error: 'No records found.', name: user.name });
+        }
 
-    if (!scores || scores.length === 0) {
-      return res.status(404).send({ error: 'No records found.' });
-    }
-
-    res.status(200).send(scores);
+        res.status(200).send(score);
+      });
   } catch (error) {
     res.status(404).send(error);
   }

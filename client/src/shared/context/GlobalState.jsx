@@ -74,21 +74,18 @@ export const GlobalProvider = ({ children }) => {
     });
   };
 
-  const logout = useCallback(async () => {
+  const logout = useCallback(async (isDeleteUser) => {
     try {
-      await trivia.post('/users/logout', {
-        logout: true,
-        _id: JSON.parse(localStorage.getItem('userData'))._id,
-      });
+      if (!isDeleteUser) await trivia.post('/users/logout');
 
       localStorage.removeItem('userData');
+
+      dispatch({
+        type: LOGOUT,
+      });
     } catch (error) {
       console.log(error);
     }
-
-    dispatch({
-      type: LOGOUT,
-    });
   }, []);
 
   const login = useCallback(
@@ -123,7 +120,7 @@ export const GlobalProvider = ({ children }) => {
 
           const remainingTime = user.exp * 1000 - new Date().getTime();
           setTimeout(() => {
-            logout();
+            logout(false);
           }, remainingTime);
         } catch (e) {
           error = e.response.data.error;
@@ -180,13 +177,14 @@ export const GlobalProvider = ({ children }) => {
     setPlayingStatus('PLAYING');
   }, [state.option]);
 
-  const clearQA = () => {
+  const clearQA = useCallback(() => {
     const resetState = {
       questionNumber: 0,
       option: {},
       qa: [],
       score: 0,
       boolScore: [],
+      playingStatus: 'OPTION',
       start: false,
     };
 
@@ -194,7 +192,7 @@ export const GlobalProvider = ({ children }) => {
       type: CLEAR_QA,
       payload: resetState,
     });
-  };
+  }, []);
 
   const incrementQNumber = (n) => {
     dispatch({

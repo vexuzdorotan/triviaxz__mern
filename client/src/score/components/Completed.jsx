@@ -19,14 +19,9 @@ import Login from '../../user/pages/Login';
 import { GlobalContext } from '../../shared/context/GlobalState';
 
 const Completed = (props) => {
-  const {
-    isLoggedIn,
-    setPlayingStatus,
-    score,
-    option,
-    start,
-    clearQA,
-  } = useContext(GlobalContext);
+  const { isLoggedIn, score, option, start, clearQA } = useContext(
+    GlobalContext
+  );
   const [modalShow, setModalShow] = useState(false);
   const [clickedSave, setClickedSave] = useState(false);
   const [alertSave, setAlertSave] = useState(null);
@@ -64,7 +59,6 @@ const Completed = (props) => {
 
   const playAgainOnClick = () => {
     if (start) {
-      setPlayingStatus('OPTION');
       props.onHide();
       clearQA();
     }

@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, Link } from 'react-router-dom';
 import { Navbar, Nav, Image, Button } from 'react-bootstrap';
 import jwt from 'jsonwebtoken';
 
@@ -7,15 +7,9 @@ import { GlobalContext } from '../context/GlobalState';
 import Login from '../../user/pages/Login';
 
 const NavBar = () => {
-  const {
-    isLoggedIn,
-    login,
-    logout,
-    user,
-    setPlayingStatus,
-    start,
-    clearQA,
-  } = useContext(GlobalContext);
+  const { isLoggedIn, login, logout, user, start, clearQA } = useContext(
+    GlobalContext
+  );
   const [modalShow, setModalShow] = useState(false);
 
   useEffect(() => {
@@ -30,13 +24,13 @@ const NavBar = () => {
 
         const remainingTime = decoded.exp * 1000 - new Date().getTime();
         setTimeout(() => {
-          logout();
+          logout(false);
         }, remainingTime);
 
         login(null, null, userData);
       } catch (error) {
         console.log(error);
-        logout();
+        logout(false);
       }
     }
   }, [isLoggedIn, login, logout]);
@@ -44,13 +38,12 @@ const NavBar = () => {
   const homeOnClick = () => {
     if (start) {
       clearQA();
-      setPlayingStatus('OPTION');
     }
   };
 
   const handleLogout = () => {
     setModalShow(false);
-    logout();
+    logout(false);
   };
 
   return (
@@ -92,7 +85,13 @@ const NavBar = () => {
               <Navbar.Text>
                 Login as{' '}
                 <span className="text-light">
-                  {isLoggedIn ? user.name : 'Guest'}
+                  {isLoggedIn ? (
+                    <Link to={`/scoreboard/${user._id}`} className="text-light">
+                      {user.name}
+                    </Link>
+                  ) : (
+                    'Guest'
+                  )}
                 </span>
               </Navbar.Text>
             </div>
