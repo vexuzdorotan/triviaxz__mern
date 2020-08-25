@@ -60,7 +60,6 @@ const readScoresByUser = async (req, res, next) => {
       .populate('player', 'name image')
       .exec((err, score) => {
         if (err) throw new Error(err);
-        console.log(score);
         if (!score || score.length === 0) {
           return res
             .status(404)

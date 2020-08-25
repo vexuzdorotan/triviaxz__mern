@@ -10,7 +10,7 @@ const ScoreItem = ({ score, setSelectedId, setLoadedScores, setModalShow }) => {
   const { isLoggedIn, user } = useContext(GlobalContext);
   const playerId = useParams().playerId;
 
-  const handleModifiedScore = (id) => {
+  const handleDeletedScore = (id) => {
     setLoadedScores((prevScores) =>
       prevScores.filter((score) => score._id !== id)
     );
@@ -24,7 +24,7 @@ const ScoreItem = ({ score, setSelectedId, setLoadedScores, setModalShow }) => {
   return (
     <tr key={score._id}>
       {((user && user._id !== playerId) || !isLoggedIn) && (
-        <td>
+        <td className="text-center">
           <Image
             src={`http://localhost:5000/${score.player.image}`}
             className="my-auto mr-1"
@@ -38,15 +38,17 @@ const ScoreItem = ({ score, setSelectedId, setLoadedScores, setModalShow }) => {
           </Link>
         </td>
       )}
-      <td>{score.scored}</td>
-      <td>{score.category}</td>
-      <td>{score.note}</td>
-      <td>{moment(score.createdAt).format('L, h:mm a')}</td>
+      <td className="text-center">{score.scored}</td>
+      <td className="text-center">{score.category}</td>
+      <td className="text-center">{score.note}</td>
+      <td className="text-center">
+        {moment(score.createdAt).format('L, h:mm a')}
+      </td>
       {isLoggedIn && (
-        <td>
+        <td className="text-center">
           <ModifyButtons
             score={score}
-            modifiedScore={(id) => handleModifiedScore(id)}
+            deletedScore={(id) => handleDeletedScore(id)}
             edit={(selectedScore) => handleEditClicked(selectedScore)}
           />
         </td>

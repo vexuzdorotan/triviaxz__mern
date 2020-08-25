@@ -59,6 +59,8 @@ const Completed = (props) => {
 
   const playAgainOnClick = () => {
     if (start) {
+      setClickedSave(false);
+      setAlertSave(null);
       props.onHide();
       clearQA();
     }
@@ -124,6 +126,7 @@ const Completed = (props) => {
                         }}
                         value={values.note}
                         isInvalid={touched.note && errors.note}
+                        autoComplete="off"
                       />
                       <ErrorMessage name="note" component={FormText} />
                     </FormGroup>
@@ -132,7 +135,7 @@ const Completed = (props) => {
                 <Row>
                   <Col className="text-right mb-2">
                     <Button type="submit" disabled={isSubmitting}>
-                      {!isLoggedIn && 'Login to '}Save to Scoreboard
+                      Save to Scoreboard
                     </Button>
                     <Button onClick={() => playAgainOnClick()} className="ml-2">
                       Play Again

@@ -9,23 +9,19 @@ const Option = () => {
   const [category, setCategory] = useState('');
   const [alertSelect, setAlertSelect] = useState(false);
 
-  const category1Radios = [
+  const categoryRadios = [
     { name: 'Mathematics', value: '19' },
     { name: 'Computers', value: '18' },
     { name: 'Gadgets', value: '30' },
-  ];
-  const category2Radios = [
     { name: 'Geography', value: '22' },
     { name: 'History', value: '23' },
     { name: 'Animals', value: '27' },
-  ];
-  const category3Radios = [
     { name: 'Mythology', value: '20' },
     { name: 'Books', value: '10' },
     { name: 'Vehicles', value: '28' },
   ];
 
-  // const radios = [category1Radios, category2Radios, category3Radios, difficultyRadios, amountRadios]
+  // const radios = [categoryRadios, difficultyRadios, amountRadios]
 
   useEffect(() => {
     if (category !== '') {
@@ -47,11 +43,11 @@ const Option = () => {
 
   const renderList = () => {
     return (
-      <>
+      <div className="vxz-option">
         <h6>Select Category: {categoryName}</h6>
 
         <ButtonGroup toggle className="option-buttons">
-          {category1Radios.map((radio, idx) => (
+          {categoryRadios.map((radio, idx) => (
             <ToggleButton
               key={idx}
               type="radio"
@@ -71,54 +67,12 @@ const Option = () => {
           ))}
         </ButtonGroup>
 
-        <ButtonGroup toggle className="option-buttons">
-          {category2Radios.map((radio, idx) => (
-            <ToggleButton
-              key={idx}
-              type="radio"
-              variant="secondary"
-              name="category-radio"
-              value={radio.value}
-              size="sm"
-              checked={category === radio.value}
-              onChange={(e) => {
-                setCategory(e.currentTarget.value);
-                setCategoryName(radio.name);
-              }}
-              style={{ display: 'block' }}
-            >
-              {radio.name}
-            </ToggleButton>
-          ))}
-        </ButtonGroup>
-
-        <ButtonGroup toggle className="option-buttons">
-          {category3Radios.map((radio, idx) => (
-            <ToggleButton
-              key={idx}
-              type="radio"
-              variant="secondary"
-              name="category-radio"
-              value={radio.value}
-              size="sm"
-              checked={category === radio.value}
-              onChange={(e) => {
-                setCategory(e.currentTarget.value);
-                setCategoryName(radio.name);
-              }}
-              style={{ display: 'block' }}
-            >
-              {radio.name}
-            </ToggleButton>
-          ))}
-        </ButtonGroup>
-
         <Button
           variant="primary"
           size="sm"
           block
           onClick={() => startOnClick()}
-          className="start-button mb-2"
+          className="start-button mb-2 mt-3"
         >
           Start Game
         </Button>
@@ -126,7 +80,7 @@ const Option = () => {
         {alertSelect && (
           <Alert variant="warning">Please select a category.</Alert>
         )}
-      </>
+      </div>
     );
   };
 

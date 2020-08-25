@@ -13,7 +13,7 @@ const App = () => {
     <GlobalProvider>
       <Router>
         <NavBar />
-        <Container className="mt-5">
+        <Container>
           <Switch>
             <Route path="/" exact component={Play}></Route>
             <Route path="/scoreboard" exact component={Scoreboard}></Route>

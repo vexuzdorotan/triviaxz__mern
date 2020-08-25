@@ -46,6 +46,11 @@
   }
 }
 
+/* Option */
+.vxz-option {
+  margin-top: 20vh;
+}
+
 /* Scoreboard */
 .vxz-scoreboard-button {
   font-size: 12px;

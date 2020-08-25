@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import { Table, Spinner, Button } from 'react-bootstrap';
 
 import { GlobalContext } from '../../shared/context/GlobalState';
@@ -14,6 +14,7 @@ const Scoreboard = () => {
   const [playerName, setPlayerName] = useState('');
   const [modalShow, setModalShow] = useState(false);
   const playerId = useParams().playerId;
+  const history = useHistory();
 
   useEffect(() => {
     clearQA();
@@ -31,7 +32,11 @@ const Scoreboard = () => {
         setLoadedScores(response.data);
       } catch (error) {
         console.log(error);
-        setPlayerName(error.response.data.name);
+        if (!error.response) {
+          history.push('/');
+        } else {
+          setPlayerName(error.response.data.name);
+        }
       }
     };
     fetchScores();
@@ -40,14 +45,18 @@ const Scoreboard = () => {
   const deleteUserOnClick = async () => {
     try {
       await trivia.delete('/users/delete');
+      setLoadedScores((prevLoadedScores) =>
+        prevLoadedScores.filter((score) => score.player._id !== user._id)
+      );
       localStorage.removeItem('userData');
       logout(true);
+      history.push('/');
     } catch (error) {}
   };
 
   const renderTable = () => {
     return (
-      <>
+      <div className="mt-5">
         <EditNote
           show={modalShow}
           onHide={() => setModalShow(false)}
@@ -63,7 +72,9 @@ const Scoreboard = () => {
         <Table striped bordered hover size="sm" responsive="lg" variant="dark">
           <thead>
             <tr>
-              {user && user._id !== playerId && <th>Player</th>}
+              {((user && user._id !== playerId) || !isLoggedIn) && (
+                <th>Player</th>
+              )}
               <th>Score</th>
               <th>Category</th>
               <th>Note</th>
@@ -94,7 +105,7 @@ const Scoreboard = () => {
             Delete My Account
           </Button>
         )}
-      </>
+      </div>
     );
   };
 

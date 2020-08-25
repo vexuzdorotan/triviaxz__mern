@@ -5,6 +5,7 @@ import {
   Alert,
   ProgressBar,
   Spinner,
+  Card,
 } from 'react-bootstrap';
 
 import { GlobalContext } from '../../shared/context/GlobalState';
@@ -28,7 +29,7 @@ const Play = () => {
   } = useContext(GlobalContext);
 
   // OPTION, LOADING, PLAYING, COMPLETED
-  const [timer, setTimer] = useState(3);
+  const [timer, setTimer] = useState(10);
   const [choices, setChoices] = useState([]);
   const [alert, setAlert] = useState(false);
   const [correct, setCorrect] = useState(true);
@@ -37,7 +38,7 @@ const Play = () => {
   const intervalId = useRef(null);
 
   const startInterval = () => {
-    setTimer(3);
+    setTimer(10);
     intervalId.current = window.setInterval(() => {
       setTimer((time) => time - 1);
     }, 1000);
@@ -128,7 +129,9 @@ const Play = () => {
       stopInterval();
     }
 
-    return () => (isMounted = false);
+    return () => {
+      isMounted = false;
+    };
   }, [timer, playingStatus]);
 
   const showQuiz = () => {
@@ -150,7 +153,7 @@ const Play = () => {
         return (
           <Button
             onClick={(e) => answerOnClick(e.target.textContent)}
-            variant="primary"
+            variant="secondary"
             key={i}
             block
           >
@@ -170,40 +173,74 @@ const Play = () => {
       return (
         <>
           <div className="d-flex justify-content-between align-items-center mb-2">
-            <h1>Question {`${qN + 1}`}</h1>
-            <h1>{option.categoryName}</h1>
+            <Card bg="primary" text="light" style={{ width: '8rem' }}>
+              <Card.Header className="text-center p-0">Question</Card.Header>
+              <Card.Body className="text-center p-0">
+                <Card.Text>{`${qN + 1}`}</Card.Text>
+              </Card.Body>
+            </Card>
+
+            <Card bg="primary" text="light" style={{ width: '8rem' }}>
+              <Card.Header className="text-center p-0">Category</Card.Header>
+              <Card.Body className="text-center p-0">
+                <Card.Text>{option.categoryName}</Card.Text>
+              </Card.Body>
+            </Card>
           </div>
-          <span>{qa[qN].question}</span>
+
+          <ProgressBar
+            label={`${((questionNumber + 1) / qa.length) * 100}%`}
+            className="my-3"
+          >
+            {progressBoolScore()}
+          </ProgressBar>
+
+          <Alert variant="secondary">{qa[qN].question}</Alert>
         </>
       );
     };
 
     return (
-      <Jumbotron style={{ padding: '1rem' }}>
+      <Jumbotron style={{ padding: '1rem', marginTop: '2vh' }}>
         <div className="d-flex justify-content-between align-items-center mb-2">
-          <h4 className="m-0">Score: {score}</h4>
-          <h3>{timer}</h3>
+          <Card bg="primary" text="light" style={{ width: '8rem' }}>
+            <Card.Header className="text-center p-0">Score</Card.Header>
+            <Card.Body className="text-center p-0">
+              <Card.Text>{score}</Card.Text>
+            </Card.Body>
+          </Card>
+          {playingStatus !== 'COMPLETED' && (
+            <Card bg="primary" text="light" style={{ width: '8rem' }}>
+              <Card.Header className="text-center p-0">Time</Card.Header>
+              <Card.Body className="text-center p-0">
+                <Card.Text
+                  className={timer <= 3 ? 'text-danger' : 'text-light'}
+                >
+                  {timer}
+                </Card.Text>
+              </Card.Body>
+            </Card>
+          )}
           {!modalShow && playingStatus === 'COMPLETED' && (
             <Button
               variant="primary"
               size="sm"
               onClick={() => setModalShow(true)}
+              className="vxz-blinking"
             >
               Save Score
             </Button>
           )}
         </div>
 
-        <ProgressBar label={`${((questionNumber + 1) / qa.length) * 100}%`}>
-          {progressBoolScore()}
-        </ProgressBar>
         {questionText()}
+
         <hr />
         <p>{answerButtons()}</p>
         {alert ? (
           <Alert
             variant={correct ? 'success' : 'danger'}
-            className="vxz-blinking"
+            className="vxz-blinking py-2"
           >
             {correct
               ? 'Correct!'

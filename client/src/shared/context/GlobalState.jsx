@@ -159,7 +159,7 @@ export const GlobalProvider = ({ children }) => {
   const fetchQA = useCallback(async () => {
     setPlayingStatus('LOADING');
     const { category } = state.option;
-    const amount = 2;
+    const amount = 10;
     const params = Object.assign(
       { encode: 'base64' },
       category && { category },

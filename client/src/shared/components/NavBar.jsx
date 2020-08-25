@@ -10,6 +10,8 @@ const NavBar = () => {
   const { isLoggedIn, login, logout, user, start, clearQA } = useContext(
     GlobalContext
   );
+
+  const [expanded, setExpanded] = useState(false);
   const [modalShow, setModalShow] = useState(false);
 
   useEffect(() => {
@@ -48,22 +50,44 @@ const NavBar = () => {
 
   return (
     <>
-      <Navbar collapseOnSelect expand="md" bg="dark" variant="dark">
+      <Navbar
+        collapseOnSelect
+        expand="md"
+        bg="dark"
+        variant="dark"
+        expanded={expanded}
+      >
         <Navbar.Brand as={NavLink} to="/" className="font-weight-bolder">
           tri<span className="text-primary">V</span>ia
           <span className="text-primary">X</span>
           <span className="text-primary">Z</span>
         </Navbar.Brand>
-        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+        <Navbar.Toggle
+          aria-controls="responsive-navbar-nav"
+          onClick={() => setExpanded(expanded ? false : 'expanded')}
+        />
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav defaultActiveKey="/">
             <Nav.Item>
-              <Nav.Link as={NavLink} to="/" exact onClick={() => homeOnClick()}>
+              <Nav.Link
+                as={NavLink}
+                to="/"
+                exact
+                onClick={() => {
+                  homeOnClick();
+                  setExpanded(false);
+                }}
+              >
                 {start ? 'Quit' : 'Play'}
               </Nav.Link>
             </Nav.Item>
             <Nav.Item>
-              <Nav.Link as={NavLink} to="/scoreboard" exact>
+              <Nav.Link
+                as={NavLink}
+                to="/scoreboard"
+                exact
+                onClick={() => setExpanded(false)}
+              >
                 Scoreboard
               </Nav.Link>
             </Nav.Item>
@@ -86,7 +110,11 @@ const NavBar = () => {
                 Login as{' '}
                 <span className="text-light">
                   {isLoggedIn ? (
-                    <Link to={`/scoreboard/${user._id}`} className="text-light">
+                    <Link
+                      to={`/scoreboard/${user._id}`}
+                      className="text-light"
+                      onClick={() => setExpanded(false)}
+                    >
                       {user.name}
                     </Link>
                   ) : (
@@ -97,9 +125,10 @@ const NavBar = () => {
             </div>
             <Button
               variant="outline-light"
-              onClick={() =>
-                !isLoggedIn ? setModalShow(true) : handleLogout()
-              }
+              onClick={() => {
+                !isLoggedIn ? setModalShow(true) : handleLogout();
+                setExpanded(false);
+              }}
             >
               {!isLoggedIn ? 'Login' : 'Logout'}
             </Button>

@@ -39,7 +39,6 @@ const loginUser = async (req, res, next) => {
 
 const logoutUser = async (req, res, next) => {
   try {
-    // console.log(req.user);
     const user = await User.findById(req.user._id);
     user.tokens = [];
 
