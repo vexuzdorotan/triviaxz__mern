@@ -1,5 +1,10 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  useHistory,
+} from 'react-router-dom';
 import { Container } from 'react-bootstrap';
 
 import { GlobalProvider } from './shared/context/GlobalState';
@@ -9,21 +14,22 @@ import Scoreboard from './score/pages/Scoreboard';
 import './App.css';
 
 const App = () => {
+  const history = useHistory();
+  console.log(window.location.pathname);
+
   return (
     <GlobalProvider>
       <Router>
         <NavBar />
-        <Container>
-          <Switch>
-            <Route path="/" exact component={Play}></Route>
-            <Route path="/scoreboard" exact component={Scoreboard}></Route>
-            <Route
-              path="/scoreboard/:playerId"
-              exact
-              component={Scoreboard}
-            ></Route>
-          </Switch>
-        </Container>
+        <Switch>
+          <Route path="/" exact component={Play}></Route>
+          <Route path="/scoreboard" exact component={Scoreboard}></Route>
+          <Route
+            path="/scoreboard/:playerId"
+            exact
+            component={Scoreboard}
+          ></Route>
+        </Switch>
       </Router>
     </GlobalProvider>
   );

@@ -1,4 +1,5 @@
-import React, { createContext, useReducer, useCallback } from 'react';
+import React, { useRef, createContext, useReducer, useCallback } from 'react';
+import axios from 'axios';
 
 import {
   RESET_HTTP_ERROR,
@@ -37,6 +38,8 @@ export const GlobalContext = createContext(initialState);
 
 export const GlobalProvider = ({ children }) => {
   const [state, dispatch] = useReducer(GlobalReducer, initialState);
+
+  const cancelToken = useRef(null);
 
   const resetHttpError = async () => {
     dispatch({
@@ -166,15 +169,26 @@ export const GlobalProvider = ({ children }) => {
       amount && { amount }
     );
 
-    const response = await opentdb.get('', {
-      params,
-    });
+    cancelToken.current &&
+      cancelToken.current.cancel('Operation canceled due to new request.');
 
-    dispatch({
-      type: FETCH_QA,
-      payload: response.data.results,
-    });
-    setPlayingStatus('PLAYING');
+    cancelToken.current = axios.CancelToken.source();
+
+    try {
+      const response = await opentdb.get('', {
+        params,
+        cancelToken: cancelToken.current.token,
+      });
+
+      dispatch({
+        type: FETCH_QA,
+        payload: response.data.results,
+      });
+
+      setPlayingStatus('PLAYING');
+    } catch (err) {
+      console.log(err);
+    }
   }, [state.option]);
 
   const clearQA = useCallback(() => {
@@ -187,6 +201,9 @@ export const GlobalProvider = ({ children }) => {
       playingStatus: 'OPTION',
       start: false,
     };
+
+    cancelToken.current &&
+      cancelToken.current.cancel('Operation canceled due to new request.');
 
     dispatch({
       type: CLEAR_QA,

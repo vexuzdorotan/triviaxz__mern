@@ -41,7 +41,7 @@ const readScores = async (req, res, next) => {
       // .populate('player', 'name image')
       .populate({
         path: 'player',
-        select: 'name image',
+        select: 'email name image',
       })
       .exec((err, score) => {
         if (err) throw new Error(err);
@@ -57,7 +57,7 @@ const readScoresByUser = async (req, res, next) => {
     const user = await User.findById(req.params.uid, 'name');
     await Score.find({ player: req.params.uid })
       .sort({ createdAt: -1 })
-      .populate('player', 'name image')
+      .populate('player', 'email name image')
       .exec((err, score) => {
         if (err) throw new Error(err);
         if (!score || score.length === 0) {

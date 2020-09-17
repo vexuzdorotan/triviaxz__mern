@@ -1,3 +1,9 @@
+html,
+body,
+#root {
+  height: 80vh;
+}
+
 .option-buttons {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -46,14 +52,27 @@
   }
 }
 
-/* Option */
-.vxz-option {
-  margin-top: 20vh;
+/* Jumbotron */
+.vxz-jumbotron {
+  /* margin-top: 10vh; */
+  min-width: 100%;
+  /* min-height: 80%; */
 }
+
+/* Option */
+/* .vxz-option {
+  margin-top: 20vh;
+} */
 
 /* Scoreboard */
 .vxz-scoreboard-button {
   font-size: 12px;
   padding: 0 2px 0;
   margin-left: 0.5rem;
+}
+
+@media (min-width: 768px) {
+  .vxz-table-swipe {
+    display: none;
+  }
 }

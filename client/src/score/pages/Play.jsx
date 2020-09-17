@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect, useContext } from 'react';
 import {
+  Container,
   Jumbotron,
   Button,
   Alert,
@@ -172,61 +173,33 @@ const Play = () => {
 
       return (
         <>
-          <div className="d-flex justify-content-between align-items-center mb-2">
-            <Card bg="primary" text="light" style={{ width: '8rem' }}>
-              <Card.Header className="text-center p-0">Question</Card.Header>
-              <Card.Body className="text-center p-0">
-                <Card.Text>{`${qN + 1}`}</Card.Text>
-              </Card.Body>
-            </Card>
-
-            <Card bg="primary" text="light" style={{ width: '8rem' }}>
-              <Card.Header className="text-center p-0">Category</Card.Header>
-              <Card.Body className="text-center p-0">
-                <Card.Text>{option.categoryName}</Card.Text>
-              </Card.Body>
-            </Card>
-          </div>
-
           <ProgressBar
             label={`${((questionNumber + 1) / qa.length) * 100}%`}
-            className="my-3"
+            className="mb-3"
           >
             {progressBoolScore()}
           </ProgressBar>
 
-          <Alert variant="secondary">{qa[qN].question}</Alert>
+          <Alert variant="primary">{qa[qN].question}</Alert>
         </>
       );
     };
 
     return (
-      <Jumbotron style={{ padding: '1rem', marginTop: '2vh' }}>
-        <div className="d-flex justify-content-between align-items-center mb-2">
-          <Card bg="primary" text="light" style={{ width: '8rem' }}>
-            <Card.Header className="text-center p-0">Score</Card.Header>
-            <Card.Body className="text-center p-0">
-              <Card.Text>{score}</Card.Text>
-            </Card.Body>
-          </Card>
+      <Jumbotron className="my-auto px-2 pt-0 pb-2 vxz-jumbotron">
+        <div className="d-flex justify-content-center align-items-center">
           {playingStatus !== 'COMPLETED' && (
-            <Card bg="primary" text="light" style={{ width: '8rem' }}>
-              <Card.Header className="text-center p-0">Time</Card.Header>
-              <Card.Body className="text-center p-0">
-                <Card.Text
-                  className={timer <= 3 ? 'text-danger' : 'text-light'}
-                >
-                  {timer}
-                </Card.Text>
-              </Card.Body>
-            </Card>
+            <h1 className={timer <= 3 ? 'text-danger m-0' : 'text-success m-0'}>
+              {timer}
+            </h1>
           )}
+
           {!modalShow && playingStatus === 'COMPLETED' && (
             <Button
               variant="primary"
               size="sm"
               onClick={() => setModalShow(true)}
-              className="vxz-blinking"
+              className="vxz-blinking my-2"
             >
               Save Score
             </Button>
@@ -236,11 +209,11 @@ const Play = () => {
         {questionText()}
 
         <hr />
-        <p>{answerButtons()}</p>
+        <p className="m-0">{answerButtons()}</p>
         {alert ? (
           <Alert
             variant={correct ? 'success' : 'danger'}
-            className="vxz-blinking py-2"
+            className="vxz-blinking m-0 mt-2"
           >
             {correct
               ? 'Correct!'
@@ -254,7 +227,7 @@ const Play = () => {
   };
 
   return (
-    <>
+    <Container className="h-100 d-flex justify-content-center align-items-center overflow-auto">
       <Completed show={modalShow} onHide={() => setModalShow(false)} />
       {playingStatus === 'OPTION' && <Option />}
       {playingStatus === 'LOADING' && (
@@ -262,7 +235,7 @@ const Play = () => {
       )}
       {(playingStatus === 'PLAYING' || playingStatus === 'COMPLETED') &&
         showQuiz()}
-    </>
+    </Container>
   );
 };
 

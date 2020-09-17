@@ -135,7 +135,7 @@ const Completed = (props) => {
                 <Row>
                   <Col className="text-right mb-2">
                     <Button type="submit" disabled={isSubmitting}>
-                      Save to Scoreboard
+                      Save Score
                     </Button>
                     <Button onClick={() => playAgainOnClick()} className="ml-2">
                       Play Again

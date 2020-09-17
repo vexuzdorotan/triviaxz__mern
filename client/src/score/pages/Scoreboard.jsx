@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { useParams, useHistory } from 'react-router-dom';
-import { Table, Spinner, Button } from 'react-bootstrap';
+import { useParams, useHistory, Link } from 'react-router-dom';
+import { Container, Table, Spinner, Button } from 'react-bootstrap';
 
 import { GlobalContext } from '../../shared/context/GlobalState';
 import trivia from '../../shared/api/trivia-quiz';
@@ -12,6 +12,7 @@ const Scoreboard = () => {
   const [loadedScores, setLoadedScores] = useState();
   const [selectedScore, setSelectedId] = useState();
   const [playerName, setPlayerName] = useState('');
+  const [playerEmail, setPlayerEmail] = useState('');
   const [modalShow, setModalShow] = useState(false);
   const playerId = useParams().playerId;
   const history = useHistory();
@@ -28,6 +29,7 @@ const Scoreboard = () => {
 
         if (response.data.length > 0)
           setPlayerName(response.data[0].player.name);
+        setPlayerEmail(response.data[0].player.email);
 
         setLoadedScores(response.data);
       } catch (error) {
@@ -36,11 +38,12 @@ const Scoreboard = () => {
           history.push('/');
         } else {
           setPlayerName(error.response.data.name);
+          setPlayerEmail(error.response.data.email);
         }
       }
     };
     fetchScores();
-  }, [playerId, clearQA]);
+  }, [playerId, clearQA, history]);
 
   const deleteUserOnClick = async () => {
     try {
@@ -56,7 +59,7 @@ const Scoreboard = () => {
 
   const renderTable = () => {
     return (
-      <div className="mt-5">
+      <div>
         <EditNote
           show={modalShow}
           onHide={() => setModalShow(false)}
@@ -64,22 +67,32 @@ const Scoreboard = () => {
           setLoadedScores={setLoadedScores}
         />
 
-        <h4>
-          {(playerId && (playerName || <Spinner animation="grow" />)) ||
+        <h6>
+          {(playerId &&
+            (`${playerName} | ${playerEmail} | ` || (
+              <Spinner animation="grow" />
+            ))) ||
             'All Players'}
-        </h4>
+          {playerId && <Link to="/scoreboard">See All Players</Link>}
+        </h6>
 
-        <Table striped bordered hover size="sm" responsive="lg" variant="dark">
+        <Table
+          striped
+          bordered
+          hover
+          size="sm"
+          responsive="lg"
+          variant="dark"
+          className="mx-0 mt-0 mb-1"
+        >
           <thead>
             <tr>
-              {((user && user._id !== playerId) || !isLoggedIn) && (
-                <th>Player</th>
-              )}
+              {!playerId && <th>Player</th>}
               <th>Score</th>
               <th>Category</th>
               <th>Note</th>
               <th>Date</th>
-              {isLoggedIn && <th></th>}
+              {isLoggedIn && playerId === user._id && <th></th>}
             </tr>
           </thead>
           <tbody>
@@ -95,6 +108,9 @@ const Scoreboard = () => {
               ))}
           </tbody>
         </Table>
+        <p className="text-muted m-0 vxz-table-swipe">
+          Swipe table left and right if its width is too small.
+        </p>
         {user && user._id === playerId && (
           <Button
             variant="outline-danger"
@@ -109,7 +125,7 @@ const Scoreboard = () => {
     );
   };
 
-  return <>{renderTable()}</>;
+  return <Container className="mt-5">{renderTable()}</Container>;
 };
 
 export default Scoreboard;

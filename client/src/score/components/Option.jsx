@@ -43,8 +43,10 @@ const Option = () => {
 
   const renderList = () => {
     return (
-      <div className="vxz-option">
-        <h6>Select Category: {categoryName}</h6>
+      <div className="vxz-option my-auto">
+        <h6 className={categoryName ? 'text-success' : 'text-danger'}>
+          {categoryName ? categoryName : 'Select Category'}
+        </h6>
 
         <ButtonGroup toggle className="option-buttons">
           {categoryRadios.map((radio, idx) => (
