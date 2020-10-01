@@ -26,7 +26,7 @@ const ScoreItem = ({ score, setSelectedId, setLoadedScores, setModalShow }) => {
       {!playerId && (
         <td className="text-center">
           <Image
-            src={`http://localhost:5000/${score.player.image}`}
+            src={`${process.env.REACT_APP_ASSET_URL}/${score.player.image}`}
             className="my-auto mr-1"
             roundedCircle
             fluid

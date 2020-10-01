@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const fetchClient = () => {
   const instance = axios.create({
-    baseURL: 'http://localhost:5000/api',
+    baseURL: process.env.REACT_APP_BACKEND_URL,
   });
 
   instance.interceptors.request.use((config) => {

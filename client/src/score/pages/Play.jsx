@@ -6,7 +6,6 @@ import {
   Alert,
   ProgressBar,
   Spinner,
-  Card,
 } from 'react-bootstrap';
 
 import { GlobalContext } from '../../shared/context/GlobalState';
@@ -19,7 +18,6 @@ const Play = () => {
     setPlayingStatus,
     start,
     qa,
-    option,
     questionNumber,
     fetchQA,
     incrementQNumber,
