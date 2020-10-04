@@ -25,11 +25,13 @@ const Scoreboard = () => {
         const url = playerId
           ? `/scores/record/${playerId}`
           : '/scores/?sortBy=createdAt:desc';
+
         const response = await trivia.get(url);
 
-        if (response.data.length > 0)
+        if (response.data.length > 0) {
           setPlayerName(response.data[0].player.name);
-        setPlayerEmail(response.data[0].player.email);
+          setPlayerEmail(response.data[0].player.email);
+        }
 
         setLoadedScores(response.data);
       } catch (error) {

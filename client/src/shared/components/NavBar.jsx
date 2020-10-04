@@ -98,7 +98,12 @@ const NavBar = () => {
               {isLoggedIn && (
                 <span>
                   <Image
-                    src={`${process.env.REACT_APP_ASSET_URL}/${user.image}`}
+                    src={`data:image/jpg;base64,${btoa(
+                      user.image.data.reduce(
+                        (data, byte) => data + String.fromCharCode(byte),
+                        ''
+                      )
+                    )}`}
                     className="my-auto mr-2"
                     roundedCircle
                     // fluid

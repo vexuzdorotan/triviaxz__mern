@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const sharp = require('sharp');
 require('dotenv').config();
 
 const User = require('../models/model-user');
@@ -53,6 +54,10 @@ const createUser = async (req, res, next) => {
   try {
     const { name, email, password } = req.body;
     const emailExisted = await User.findOne({ email });
+    const image = await sharp(req.file.buffer)
+      .resize({ width: 200, height: 200 })
+      .png()
+      .toBuffer();
 
     if (emailExisted) {
       return res.status(400).send({ error: 'Email already existed.' });
@@ -62,7 +67,7 @@ const createUser = async (req, res, next) => {
       name,
       email,
       password,
-      image: req.file.path,
+      image,
     });
     await user.save();
     const token = await user.generateAuthToken();

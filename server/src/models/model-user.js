@@ -31,7 +31,7 @@ const userSchema = new Schema(
       required: true,
     },
     image: {
-      type: String,
+      type: Buffer,
     },
     tokens: [
       {
