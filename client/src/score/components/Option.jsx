@@ -7,7 +7,7 @@ const Option = () => {
 
   const [categoryName, setCategoryName] = useState('');
   const [category, setCategory] = useState('');
-  const [alertSelect, setAlertSelect] = useState(false);
+  const [select, setSelect] = useState(true);
 
   const categoryRadios = [
     { name: 'Mathematics', value: '19' },
@@ -25,13 +25,13 @@ const Option = () => {
 
   useEffect(() => {
     if (category !== '') {
-      setAlertSelect(false);
+      setSelect(false);
     }
   }, [category]);
 
   const startOnClick = () => {
     if (category === '') {
-      return setAlertSelect(true);
+      return setSelect(true);
     }
 
     setOption({
@@ -73,15 +73,13 @@ const Option = () => {
           variant="primary"
           size="sm"
           block
+          disabled={select}
           onClick={() => startOnClick()}
           className="start-button mb-2 mt-3"
         >
           Start Game
         </Button>
-
-        {alertSelect && (
-          <Alert variant="warning">Please select a category.</Alert>
-        )}
+        
       </div>
     );
   };

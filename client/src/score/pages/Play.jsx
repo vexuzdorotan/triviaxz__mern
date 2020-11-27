@@ -30,8 +30,9 @@ const Play = () => {
   // OPTION, LOADING, PLAYING, COMPLETED
   const [timer, setTimer] = useState(10);
   const [choices, setChoices] = useState([]);
-  const [alert, setAlert] = useState(false);
-  const [correct, setCorrect] = useState(true);
+  const [correct, setCorrect] = useState(undefined);
+  const [answer, setAnswer] = useState(null)
+  const [correctAnswer, setCorrectAnswer] = useState(undefined)
   const [disableToAnswer, setDisableToAnswer] = useState(false);
   const [modalShow, setModalShow] = useState(false);
   const intervalId = useRef(null);
@@ -54,7 +55,6 @@ const Play = () => {
       fetchQA();
       setDisableToAnswer(false);
     } else {
-      setAlert(false);
       setChoices([]);
       setCorrect(true);
     }
@@ -84,10 +84,12 @@ const Play = () => {
     };
   }, [qa, questionNumber]);
 
-  const answerOnClick = (ans) => {
-    if (disableToAnswer) return;
+  const answerOnClick = (ans, i) => {
+    setAnswer(i)
+    
     if (questionNumber < qa.length) {
       const correct = qa[questionNumber].correct_answer === ans;
+      setCorrectAnswer(qa[questionNumber].correct_answer)
 
       setDisableToAnswer(true);
       stopInterval();
@@ -100,10 +102,11 @@ const Play = () => {
       }
 
       setCorrect(correct);
-      setAlert(true);
 
       setTimeout(() => {
-        setAlert(false);
+        setCorrectAnswer(undefined)
+        setAnswer(undefined)
+        setCorrect(undefined)
 
         if (qa.length === questionNumber + 1) {
           setPlayingStatus('COMPLETED');
@@ -124,7 +127,7 @@ const Play = () => {
     let isMounted = true;
 
     if ((isMounted && timer === 0) || playingStatus !== 'PLAYING') {
-      answerOnClick(null);
+      answerOnClick(null, null);
       stopInterval();
     }
 
@@ -151,9 +154,13 @@ const Play = () => {
       return choices.map((choice, i) => {
         return (
           <Button
-            onClick={(e) => answerOnClick(e.target.textContent)}
-            variant="secondary"
+            className={correctAnswer === choice && 'vxz-blinking'}
+            onClick={(e) => answerOnClick(e.target.textContent, i)}
+            variant={correctAnswer === choice ? 'success' :
+              answer === i && !correct ? 'danger' : 'secondary'
+            }
             key={i}
+            disabled={disableToAnswer}
             block
           >
             {choice}
@@ -208,18 +215,6 @@ const Play = () => {
 
         <hr />
         <p className="m-0">{answerButtons()}</p>
-        {alert ? (
-          <Alert
-            variant={correct ? 'success' : 'danger'}
-            className="vxz-blinking m-0 mt-2"
-          >
-            {correct
-              ? 'Correct!'
-              : `Oops! Correct answer: ${qa[questionNumber].correct_answer}`}
-          </Alert>
-        ) : (
-          ''
-        )}
       </Jumbotron>
     );
   };
