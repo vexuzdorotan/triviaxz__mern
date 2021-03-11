@@ -1,63 +1,64 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { useParams, useHistory, Link } from 'react-router-dom';
-import { Container, Table, Spinner, Button } from 'react-bootstrap';
+import React, { useState, useEffect, useContext } from 'react'
+import { useParams, useHistory, Link } from 'react-router-dom'
+import { Container, Table, Spinner, Button } from 'react-bootstrap'
 
-import { GlobalContext } from '../../shared/context/GlobalState';
-import trivia from '../../shared/api/trivia-quiz';
-import EditNote from '../components/EditNote';
-import ScoreItem from '../components/ScoreItem';
+import { GlobalContext } from '../../shared/context/GlobalState'
+import trivia from '../../shared/api/trivia-quiz'
+import EditNote from '../components/EditNote'
+import ScoreItem from '../components/ScoreItem'
 
 const Scoreboard = () => {
-  const { isLoggedIn, user, logout, clearQA } = useContext(GlobalContext);
-  const [loadedScores, setLoadedScores] = useState();
-  const [selectedScore, setSelectedId] = useState();
-  const [playerName, setPlayerName] = useState('');
-  const [playerEmail, setPlayerEmail] = useState('');
-  const [modalShow, setModalShow] = useState(false);
-  const playerId = useParams().playerId;
-  const history = useHistory();
+  const { isLoggedIn, user, logout, clearQA } = useContext(GlobalContext)
+  const [loadedScores, setLoadedScores] = useState()
+  const [selectedScore, setSelectedId] = useState()
+  const [playerName, setPlayerName] = useState('')
+  const [playerEmail, setPlayerEmail] = useState('')
+  const [modalShow, setModalShow] = useState(false)
+  const playerId = useParams().playerId
+  const history = useHistory()
 
   useEffect(() => {
-    clearQA();
-    setLoadedScores(undefined);
+    clearQA()
+    setLoadedScores(undefined)
     const fetchScores = async () => {
       try {
         const url = playerId
           ? `/scores/record/${playerId}`
-          : '/scores/?sortBy=createdAt:desc';
+          : '/scores/?sortBy=createdAt:desc'
 
-        const response = await trivia.get(url);
+        const response = await trivia.get(url)
 
         if (response.data.length > 0) {
-          setPlayerName(response.data[0].player.name);
-          setPlayerEmail(response.data[0].player.email);
+          setPlayerName(response.data[0].player.name)
+          setPlayerEmail(response.data[0].player.email)
         }
 
-        setLoadedScores(response.data);
+        setLoadedScores(response.data)
       } catch (error) {
-        console.log(error);
+        console.log(error)
         if (!error.response) {
-          history.push('/');
+          history.push('/')
         } else {
-          setPlayerName(error.response.data.name);
-          setPlayerEmail(error.response.data.email);
+          setPlayerName(error.response.data.name)
+          setPlayerEmail(error.response.data.email)
         }
       }
-    };
-    fetchScores();
-  }, [playerId, clearQA, history]);
+    }
+    fetchScores()
+  }, [playerId, clearQA, history])
 
   const deleteUserOnClick = async () => {
     try {
-      await trivia.delete('/users/delete');
-      setLoadedScores((prevLoadedScores) =>
-        prevLoadedScores.filter((score) => score.player._id !== user._id)
-      );
-      localStorage.removeItem('userData');
-      logout(true);
-      history.push('/');
+      await trivia.delete('/users/delete')
+      loadedScores &&
+        setLoadedScores((prevLoadedScores) =>
+          prevLoadedScores.filter((score) => score.player._id !== user._id)
+        )
+      localStorage.removeItem('userData')
+      logout(true)
+      history.push('/')
     } catch (error) {}
-  };
+  }
 
   const renderTable = () => {
     return (
@@ -72,20 +73,20 @@ const Scoreboard = () => {
         <h6>
           {(playerId &&
             (`${playerName} | ${playerEmail} | ` || (
-              <Spinner animation="grow" />
+              <Spinner animation='grow' />
             ))) ||
             'All Players'}
-          {playerId && <Link to="/scoreboard">See All Players</Link>}
+          {playerId && <Link to='/scoreboard'>See All Players</Link>}
         </h6>
 
         <Table
           striped
           bordered
           hover
-          size="sm"
-          responsive="lg"
-          variant="dark"
-          className="mx-0 mt-0 mb-1"
+          size='sm'
+          responsive='lg'
+          variant='dark'
+          className='mx-0 mt-0 mb-1'
         >
           <thead>
             <tr>
@@ -110,24 +111,24 @@ const Scoreboard = () => {
               ))}
           </tbody>
         </Table>
-        <p className="text-muted m-0 vxz-table-swipe">
+        <p className='text-muted m-0 vxz-table-swipe'>
           Swipe table left and right if its width is too small.
         </p>
         {user && user._id === playerId && (
           <Button
-            variant="outline-danger"
-            size="sm"
-            className="float-right"
+            variant='outline-danger'
+            size='sm'
+            className='float-right'
             onClick={() => deleteUserOnClick()}
           >
             Delete My Account
           </Button>
         )}
       </div>
-    );
-  };
+    )
+  }
 
-  return <Container className="mt-5">{renderTable()}</Container>;
-};
+  return <Container className='mt-5'>{renderTable()}</Container>
+}
 
-export default Scoreboard;
+export default Scoreboard

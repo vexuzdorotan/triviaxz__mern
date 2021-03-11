@@ -1,13 +1,13 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { Alert, Button, ButtonGroup, ToggleButton } from 'react-bootstrap';
-import { GlobalContext } from '../../shared/context/GlobalState';
+import React, { useState, useEffect, useContext } from 'react'
+import { Button, ButtonGroup, ToggleButton } from 'react-bootstrap'
+import { GlobalContext } from '../../shared/context/GlobalState'
 
 const Option = () => {
-  const { setOption, startGame } = useContext(GlobalContext);
+  const { setOption, startGame } = useContext(GlobalContext)
 
-  const [categoryName, setCategoryName] = useState('');
-  const [category, setCategory] = useState('');
-  const [select, setSelect] = useState(true);
+  const [categoryName, setCategoryName] = useState('')
+  const [category, setCategory] = useState('')
+  const [select, setSelect] = useState(true)
 
   const categoryRadios = [
     { name: 'Mathematics', value: '19' },
@@ -19,50 +19,50 @@ const Option = () => {
     { name: 'Mythology', value: '20' },
     { name: 'Books', value: '10' },
     { name: 'Vehicles', value: '28' },
-  ];
+  ]
 
   // const radios = [categoryRadios, difficultyRadios, amountRadios]
 
   useEffect(() => {
     if (category !== '') {
-      setSelect(false);
+      setSelect(false)
     }
-  }, [category]);
+  }, [category])
 
   const startOnClick = () => {
     if (category === '') {
-      return setSelect(true);
+      return setSelect(true)
     }
 
     setOption({
       category,
       categoryName,
-    });
-    startGame(true);
-  };
+    })
+    startGame(true)
+  }
 
   const renderList = () => {
     return (
-      <div className="vxz-option my-auto">
+      <div className='vxz-option my-auto'>
         <h6 className={categoryName ? 'text-success' : 'text-danger'}>
           {categoryName ? categoryName : 'Select Category'}
         </h6>
 
-        <ButtonGroup toggle className="option-buttons">
+        <ButtonGroup toggle className='option-buttons'>
           {categoryRadios.map((radio, idx) => (
             <ToggleButton
               key={idx}
-              type="radio"
-              variant="secondary"
-              name="category-radio"
+              type='radio'
+              variant='secondary'
+              name='category-radio'
               value={radio.value}
-              size="sm"
+              size='sm'
               checked={category === radio.value}
               onChange={(e) => {
-                setCategory(e.currentTarget.value);
-                setCategoryName(radio.name);
+                setCategory(e.currentTarget.value)
+                setCategoryName(radio.name)
               }}
-              className="option-button"
+              className='option-button'
             >
               {radio.name}
             </ToggleButton>
@@ -70,21 +70,20 @@ const Option = () => {
         </ButtonGroup>
 
         <Button
-          variant="primary"
-          size="sm"
+          variant='primary'
+          size='sm'
           block
           disabled={select}
           onClick={() => startOnClick()}
-          className="start-button mb-2 mt-3"
+          className='start-button mb-2 mt-3'
         >
           Start Game
         </Button>
-        
       </div>
-    );
-  };
+    )
+  }
 
-  return renderList();
-};
+  return renderList()
+}
 
-export default Option;
+export default Option
